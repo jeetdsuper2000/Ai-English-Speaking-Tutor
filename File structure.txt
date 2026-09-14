@@ -1,0 +1,58 @@
+fluentai/
+├── package.json
+├── .env.example
+├── server/
+│   ├── index.js
+│   ├── db.js
+│   ├── schema.sql
+│   └── routes/
+│       ├── users.js
+│       ├── sessions.js
+│       ├── payments.js
+│       ├── snapshot.js
+│       ├── support.js
+│       ├── plans.js
+│       └── admin.js
+└── public/
+    ├── index.html
+    ├── css/
+    │   ├── base.css
+    │   ├── components.css
+    │   ├── tutor.css
+    │   ├── admin.css
+    │   └── responsive.css
+    └── js/
+        ├── app.js
+        ├── config.js
+        ├── utils.js
+        ├── storage.js
+        ├── router.js
+        ├── api.js
+        ├── scenarios.js
+        ├── speech/
+        │   ├── stt.js
+        │   └── tts.js
+        ├── ai/
+        │   ├── grammar.js
+        │   ├── vocab.js
+        │   ├── brain.js
+        │   ├── memory.js
+        │   ├── mood.js
+        │   ├── mastery.js
+        │   ├── agenda.js
+        │   ├── roleDetector.js
+        │   ├── lifeGenerator.js
+        │   ├── lifeStore.js
+        │   └── provider.js
+        ├── engine/
+        │   └── tutor-engine.js
+        └── views/
+            ├── landing.js
+            ├── tutor.js
+            ├── dashboard.js
+            ├── progress.js
+            ├── mistakes.js
+            ├── settings.js
+            ├── support.js
+            ├── tests.js
+            └── admin.js
