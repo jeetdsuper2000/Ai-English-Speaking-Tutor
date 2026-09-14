@@ -1,0 +1,1595 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content" />
+<meta name="theme-color" content="#080B12" />
+<title>FluentAI — Speak English. Think in English.</title>
+<style>
+:root{
+  --bg:#080B12; --bg2:#0E1320; --surface:#141A28; --surface2:#1B2334;
+  --line:#232C40; --line2:#2E3A52;
+  --text:#E8ECF4; --muted:#94A3B8; --dim:#64748B;
+  --brand:#6366F1; --brand2:#A855F7; --brand-soft:rgba(99,102,241,.14);
+  --ok:#22C55E; --warn:#F59E0B; --bad:#EF4444; --info:#38BDF8;
+  --r:16px; --r-lg:24px;
+  --grad:linear-gradient(135deg,var(--brand),var(--brand2));
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,"Helvetica Neue",Arial,sans-serif;
+  --safe-b:env(safe-area-inset-bottom,0px);
+  --safe-t:env(safe-area-inset-top,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;overscroll-behavior-y:none}
+body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;line-height:1.55;min-height:100dvh;
+  background-image:radial-gradient(900px 500px at 80% -10%,rgba(99,102,241,.18),transparent 60%),radial-gradient(700px 400px at 0% 0%,rgba(168,85,247,.10),transparent 55%);
+  background-attachment:fixed;padding-top:var(--safe-t)}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select,textarea{font-family:inherit;font-size:16px}
+:focus-visible{outline:2px solid var(--brand);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px}
+
+.nav{position:sticky;top:0;z-index:60;backdrop-filter:blur(16px);background:rgba(8,11,18,.85);border-bottom:1px solid var(--line)}
+.nav-in{max-width:1120px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px;min-height:56px}
+.logo{display:flex;align-items:center;gap:8px;font-weight:700;letter-spacing:-.02em;font-size:15px}
+.logo-mark{width:32px;height:32px;border-radius:9px;background:var(--grad);display:grid;place-items:center;font-size:16px}
+.nav-links{display:flex;gap:2px;margin-left:auto;align-items:center;flex-wrap:wrap}
+.nav-links a{padding:10px 12px;border-radius:9px;font-size:14px;color:var(--muted);font-weight:500;transition:.16s;min-height:44px;display:flex;align-items:center}
+.nav-links a:hover,.nav-links a.on{color:var(--text);background:var(--surface)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 20px;border-radius:12px;font-weight:600;font-size:15px;transition:.16s;border:1px solid transparent;white-space:nowrap;min-height:44px}
+.btn-primary{background:var(--grad);color:#fff;box-shadow:0 8px 24px -10px var(--brand)}
+.btn-primary:active{transform:scale(.97)}
+.btn-primary:disabled{opacity:.45;cursor:not-allowed}
+.btn-ghost{background:var(--surface);border-color:var(--line2);color:var(--text)}
+.btn-ghost:active{background:var(--surface2)}
+.btn-sm{padding:9px 14px;font-size:13.5px;border-radius:10px;min-height:40px}
+.btn-lg{padding:15px 30px;font-size:16px;border-radius:14px;min-height:52px}
+
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.card h3{margin:0 0 8px;font-size:15.5px;font-weight:650}
+.card p{margin:0;color:var(--muted);font-size:14px;line-height:1.6}
+.icon-box{width:40px;height:40px;border-radius:11px;background:var(--brand-soft);border:1px solid rgba(99,102,241,.28);display:grid;place-items:center;font-size:19px;margin-bottom:14px}
+
+.chips{display:flex;flex-wrap:wrap;gap:9px}
+.chip{padding:10px 15px;border-radius:100px;background:var(--surface);border:1px solid var(--line);font-size:13.5px;color:var(--muted);font-weight:500;min-height:44px;display:inline-flex;align-items:center;gap:6px;transition:.15s}
+.chip:hover{border-color:var(--brand);color:var(--text)}
+
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px}
+.stat .k{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+.stat .v{font-size:clamp(22px,5vw,26px);font-weight:770;letter-spacing:-.035em;line-height:1.1}
+.stat .sub{font-size:12px;color:var(--muted);margin-top:4px}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.panel h2{font-size:15.5px;font-weight:680;margin:0 0 14px;letter-spacing:-.015em;display:flex;align-items:center;gap:8px}
+
+.bar-row{margin-bottom:14px}
+.bar-row:last-child{margin-bottom:0}
+.bar-top{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;gap:10px}
+.bar-top .n{color:var(--muted);font-weight:550}
+.bar-top .v{font-weight:680}
+.bar{height:7px;border-radius:100px;background:var(--surface2);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:100px;background:var(--grad);transition:width .6s}
+.bar i.g{background:linear-gradient(90deg,#22C55E,#16A34A)}
+.bar i.w{background:linear-gradient(90deg,#F59E0B,#D97706)}
+
+.mistake-item{padding:12px 0;border-bottom:1px solid var(--line);display:flex;gap:11px;align-items:flex-start}
+.mistake-item:last-child{border-bottom:none;padding-bottom:0}
+.mistake-item .cat{flex:0 0 auto;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:4px 9px;border-radius:100px;background:var(--surface2);border:1px solid var(--line2);color:var(--muted)}
+.mistake-item .body{flex:1;min-width:0}
+.mistake-item .o{color:var(--muted);font-size:14px;text-decoration:line-through;text-decoration-color:rgba(239,68,68,.5)}
+.mistake-item .c{color:var(--ok);font-size:14px;font-weight:560;margin-top:2px}
+.mistake-item .meta{font-size:11.5px;color:var(--dim);margin-top:4px}
+
+.empty{text-align:center;padding:32px 18px;color:var(--dim);font-size:14px}
+.empty .em{font-size:32px;display:block;margin-bottom:10px;opacity:.6}
+
+.field{margin-bottom:14px}
+.field label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:6px}
+.field input,.field select{width:100%;padding:12px 14px;border-radius:11px;background:var(--surface);border:1px solid var(--line2);color:var(--text);font-size:15px;min-height:48px}
+.field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+
+.overlay{position:fixed;inset:0;z-index:200;background:rgba(4,6,11,.85);backdrop-filter:blur(8px);display:grid;place-items:center;padding:16px;overflow-y:auto}
+.modal{background:var(--bg2);border:1px solid var(--line2);border-radius:var(--r-lg);padding:24px;max-width:440px;width:100%;box-shadow:0 30px 80px -30px rgba(0,0,0,.9);margin:auto}
+.modal h2{margin:0 0 8px;font-size:20px;letter-spacing:-.025em;font-weight:720}
+.modal p.sub{color:var(--muted);font-size:14px;margin:0 0 20px}
+
+.toast{position:fixed;bottom:calc(140px + var(--safe-b));left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface2);border:1px solid var(--line2);color:var(--text);padding:12px 20px;border-radius:12px;font-size:14px;font-weight:550;z-index:300;opacity:0;pointer-events:none;transition:.28s;box-shadow:0 20px 60px -20px rgba(0,0,0,.8);max-width:calc(100vw - 32px);text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.banner{padding:13px 15px;border-radius:12px;font-size:13.5px;display:flex;gap:10px;align-items:flex-start;border:1px solid;margin-bottom:16px}
+.banner.warn{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.35);color:#FCD34D}
+.banner.info{background:rgba(56,189,248,.08);border-color:rgba(56,189,248,.3);color:#7DD3FC}
+
+.page-head{padding:24px 0 6px}
+.page-head h1{font-size:clamp(22px,5vw,32px);letter-spacing:-.035em;font-weight:780;margin:0 0 6px}
+.page-head p{color:var(--muted);margin:0;font-size:15px}
+
+.hero{padding:56px 0 40px;text-align:center}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:100px;background:var(--brand-soft);border:1px solid rgba(99,102,241,.32);font-size:12px;font-weight:600;color:#C7D2FE}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px rgba(34,197,94,.2)}
+.hero-h{font-size:clamp(30px,7vw,58px);line-height:1.08;letter-spacing:-.035em;font-weight:800;margin:18px auto 16px;max-width:820px}
+.grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-sub{font-size:clamp(15px,2.2vw,18px);color:var(--muted);max-width:620px;margin:0 auto 30px;line-height:1.6}
+.hero-cta{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.hero-note{margin-top:16px;font-size:13px;color:var(--dim)}
+.section{padding:48px 0}
+.section-h{font-size:clamp(22px,4vw,32px);font-weight:750;letter-spacing:-.03em;margin:0 0 10px}
+.section-sub{color:var(--muted);font-size:15.5px;margin:0 0 30px}
+
+.tutor-shell{max-width:820px;margin:0 auto;padding:14px 14px calc(160px + var(--safe-b))}
+.tutor-top{display:flex;gap:8px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.tag{padding:7px 12px;border-radius:100px;background:var(--surface);border:1px solid var(--line);font-size:12px;font-weight:600;color:var(--muted);display:inline-flex;align-items:center;gap:6px;min-height:36px}
+.tag b{color:var(--text);font-weight:650}
+.stage{background:linear-gradient(180deg,var(--surface),var(--bg2));border:1px solid var(--line2);border-radius:var(--r-lg);padding:22px 18px;display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;min-height:280px;justify-content:center;position:relative;overflow:hidden}
+.avatar{width:72px;height:72px;border-radius:50%;background:var(--grad);display:grid;place-items:center;font-size:30px;position:relative;box-shadow:0 16px 44px -14px var(--brand);flex:0 0 auto}
+.avatar::after{content:"";position:absolute;inset:-8px;border-radius:50%;border:2px solid rgba(99,102,241,.35);opacity:0;transition:.3s}
+.stage[data-state="speaking"] .avatar::after,.stage[data-state="listening"] .avatar::after{opacity:1;animation:pulseRing 1.8s ease-out infinite}
+@keyframes pulseRing{0%{transform:scale(.92);opacity:.9}100%{transform:scale(1.35);opacity:0}}
+.tutor-say{font-size:clamp(16px,3.8vw,20px);font-weight:550;letter-spacing:-.015em;line-height:1.5;max-width:600px;min-height:2.6em;display:flex;align-items:center;justify-content:center}
+.status{font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--dim)}
+.status[data-s="listening"]{color:var(--ok)}
+.status[data-s="speaking"]{color:var(--brand2)}
+.status[data-s="correcting"]{color:var(--warn)}
+.status[data-s="processing"]{color:var(--info)}
+.correction-box{width:100%;max-width:640px;background:rgba(245,158,11,.09);border:1px solid rgba(245,158,11,.32);border-radius:14px;padding:14px 16px;text-align:left;display:none}
+.correction-box.show{display:block;animation:fadeUp .28s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.correction-box .lbl{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--warn);margin-bottom:8px}
+.correction-row{font-size:14.5px;margin:5px 0;display:flex;gap:9px;align-items:flex-start}
+.correction-row .x{color:var(--bad);flex:0 0 auto;font-weight:700}
+.correction-row .y{color:var(--ok);flex:0 0 auto;font-weight:700}
+.strike{text-decoration:line-through;color:var(--muted)}
+.correction-box .why{margin-top:10px;padding-top:10px;border-top:1px dashed rgba(245,158,11,.3)}
+.correction-box .why-title{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--warn);margin-bottom:6px}
+.correction-box .why li{font-size:13px;color:var(--text);margin:4px 0}
+
+.mic-dock{position:fixed;left:0;right:0;bottom:0;z-index:70;padding:14px 14px calc(14px + var(--safe-b));background:linear-gradient(180deg,transparent,rgba(8,11,18,.96) 40%);display:flex;flex-direction:column;align-items:center;gap:10px;pointer-events:none}
+.mic-dock>*{pointer-events:auto}
+.mic-row{display:flex;align-items:center;gap:14px}
+.mic{width:76px;height:76px;border-radius:50%;background:var(--grad);display:grid;place-items:center;font-size:30px;position:relative;box-shadow:0 18px 46px -14px var(--brand);transition:transform .14s;border:3px solid rgba(255,255,255,.09)}
+.mic:active{transform:scale(.94)}
+.mic[data-state="listening"]{background:linear-gradient(135deg,#22C55E,#059669);box-shadow:0 18px 46px -12px #22C55E}
+.mic[data-state="processing"]{background:linear-gradient(135deg,#38BDF8,#0284C7)}
+.mic[data-state="speaking"]{background:linear-gradient(135deg,#475569,#334155);box-shadow:none}
+.mic[data-state="correcting"]{background:linear-gradient(135deg,#F59E0B,#D97706);box-shadow:0 18px 46px -12px #F59E0B}
+.mic[data-state="idle"]::before{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid rgba(99,102,241,.5);animation:idlePulse 2.4s ease-out infinite}
+@keyframes idlePulse{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.32);opacity:0}}
+.mic-hint{font-size:13px;color:var(--muted);font-weight:550;text-align:center;min-height:1.4em}
+.cont-toggle{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--muted);padding:6px 12px;border-radius:100px;background:var(--surface);border:1px solid var(--line);cursor:pointer}
+.cont-toggle input{width:0;height:0;opacity:0;position:absolute}
+.cont-toggle .sw{width:34px;height:20px;border-radius:100px;background:var(--surface2);position:relative;transition:.2s;flex:0 0 auto}
+.cont-toggle .sw::after{content:"";position:absolute;left:2px;top:2px;width:16px;height:16px;border-radius:50%;background:#94A3B8;transition:.2s}
+.cont-toggle input:checked~.sw{background:var(--brand)}
+.cont-toggle input:checked~.sw::after{left:16px;background:#fff}
+.cont-toggle input:checked~.label{color:var(--text)}
+
+.interim{width:100%;max-width:600px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:11px 14px;font-size:14.5px;color:var(--muted);text-align:left;min-height:44px;display:none}
+.interim.show{display:block}
+.interim b{color:var(--text);font-weight:500}
+
+.turns{display:flex;flex-direction:column;gap:10px;margin-top:22px}
+.turn{display:flex;gap:10px;max-width:92%}
+.turn.user{margin-left:auto;flex-direction:row-reverse}
+.turn .bub{padding:11px 14px;border-radius:15px;font-size:14.5px;line-height:1.55;background:var(--surface);border:1px solid var(--line)}
+.turn.user .bub{background:var(--brand-soft);border-color:rgba(99,102,241,.3)}
+.turn .who{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);margin-bottom:4px}
+
+.summary-grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));margin:18px 0}
+.sum-item{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+.sum-item .v{font-size:22px;font-weight:770;letter-spacing:-.03em}
+.sum-item .k{font-size:10.5px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;font-weight:650;margin-top:3px}
+.tiny{font-size:12px;color:var(--dim);line-height:1.6}
+footer{border-top:1px solid var(--line);padding:28px 0;margin-top:40px;color:var(--dim);font-size:13px}
+@media (min-width:640px){.g3{grid-template-columns:repeat(2,1fr)}.g4{grid-template-columns:repeat(2,1fr)}.tutor-shell{max-width:720px;padding:16px 16px calc(180px + var(--safe-b))}.mic{width:82px;height:82px}.avatar{width:78px;height:78px;font-size:32px}}
+@media (min-width:1024px){.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}.tutor-shell{max-width:820px}.stage{min-height:340px;padding:34px 26px}.mic{width:92px;height:92px}}
+@media (max-width:520px){.nav-links a{padding:8px 9px;font-size:13px}.nav-links .hide-sm{display:none}}
+@media (orientation:landscape) and (max-height:520px){.stage{min-height:150px;padding:12px;gap:8px}.avatar{width:44px;height:44px;font-size:20px}.tutor-say{font-size:15px}.mic{width:56px;height:56px;font-size:22px}.mic-dock{padding:8px 8px calc(8px + var(--safe-b))}.tutor-shell{padding:8px 12px calc(110px + var(--safe-b))}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a href="#/" class="logo"><span class="logo-mark">🎙️</span> FluentAI</a>
+    <div class="nav-links" id="navLinks"></div>
+  </div>
+</nav>
+
+<main id="app"></main>
+<div class="mic-dock" id="micDock" style="display:none"></div>
+<div class="toast" id="toast"></div>
+<div id="modalRoot"></div>
+
+<script>
+"use strict";
+/* ============================================================
+   FluentAI — Single-file app
+   Everything in one place. Data saves in browser localStorage.
+   ============================================================ */
+
+/* ---------- UTILS ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+const pick = (arr, avoid) => { if (!arr.length) return ""; if (arr.length === 1) return arr[0]; let v, g = 0; do { v = arr[Math.floor(Math.random() * arr.length)]; } while (v === avoid && ++g < 12); return v; };
+const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
+const fmtDur = (sec) => { sec = Math.max(0, Math.round(sec)); const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60; if (h) return `${h}h ${m}m`; if (m) return `${m}m ${s}s`; return `${s}s`; };
+const fmtClock = (ts) => { if (!ts) return "—"; const diff = Date.now() - ts; if (diff < 60000) return "just now"; if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`; if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`; return new Date(ts).toLocaleDateString(undefined, { day: "numeric", month: "short" }); };
+const humanAgo = (ts) => { if (!ts) return "before"; const d = Math.floor((Date.now() - ts) / 86400000); if (d === 0) return "earlier today"; if (d === 1) return "yesterday"; if (d < 7) return `${d} days ago`; if (d < 30) return "a few weeks ago"; return "some time back"; };
+
+let toastTimer = null;
+function toast(msg, ms = 2800) {
+  const t = $("#toast");
+  if (!t) return;
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), ms);
+}
+
+/* ---------- STORAGE ---------- */
+const DB_KEY = "fluentai.v1";
+const BLANK = {
+  version: 1,
+  user: null,
+  settings: { sttLang: "en-IN", rate: 0.95, voiceURI: null, correctionMode: "balanced", continuousMode: true },
+  facts: {}, events: [], tutorStatements: [], sessions: [], mistakes: [], mastery: {}, sideTopics: [], toldSeeds: [], usage: {}
+};
+
+const Store = {
+  state: null,
+  load() {
+    try {
+      const raw = localStorage.getItem(DB_KEY);
+      this.state = raw ? Object.assign(JSON.parse(JSON.stringify(BLANK)), JSON.parse(raw)) : JSON.parse(JSON.stringify(BLANK));
+    } catch { this.state = JSON.parse(JSON.stringify(BLANK)); }
+    return this.state;
+  },
+  save() { try { localStorage.setItem(DB_KEY, JSON.stringify(this.state)); } catch {} },
+  reset() { this.state = JSON.parse(JSON.stringify(BLANK)); this.save(); }
+};
+Store.load();
+
+const Repo = {
+  getUser: () => Store.state.user,
+  setUser(u) { Store.state.user = u; Store.save(); },
+  clearUser() { Store.state.user = null; Store.save(); },
+  getSettings: () => Store.state.settings,
+  setSettings(patch) { Object.assign(Store.state.settings, patch); Store.save(); },
+  getFacts: () => Store.state.facts,
+  setFacts(f) { Store.state.facts = f; Store.save(); },
+  addEvent(e) { Store.state.events.unshift(e); Store.state.events = Store.state.events.slice(0, 60); Store.save(); },
+  getEvents: () => Store.state.events,
+  addTutorStatement(s) { Store.state.tutorStatements.unshift(s); Store.state.tutorStatements = Store.state.tutorStatements.slice(0, 60); Store.save(); },
+  getTutorStatements: () => Store.state.tutorStatements,
+  addSession(s) { Store.state.sessions.unshift(s); Store.state.sessions = Store.state.sessions.slice(0, 400); Store.save(); },
+  getSessions: () => Store.state.sessions,
+  addMistakes(list) { Store.state.mistakes.unshift(...list); Store.state.mistakes = Store.state.mistakes.slice(0, 1500); Store.save(); },
+  getMistakes: () => Store.state.mistakes,
+  getMastery: () => Store.state.mastery,
+  setMastery(m) { Store.state.mastery = m; Store.save(); },
+  getSideTopics: () => Store.state.sideTopics,
+  setSideTopics(t) { Store.state.sideTopics = t; Store.save(); },
+  getToldSeeds: () => Store.state.toldSeeds,
+  setToldSeeds(s) { Store.state.toldSeeds = s; Store.save(); },
+  addUsage(sec, sess = 0) {
+    const k = new Date().toISOString().slice(0, 10);
+    const u = Store.state.usage[k] || { seconds: 0, sessions: 0 };
+    u.seconds += sec; u.sessions += sess;
+    Store.state.usage[k] = u; Store.save();
+  },
+  getTodayUsage() { const k = new Date().toISOString().slice(0, 10); return Store.state.usage[k] || { seconds: 0, sessions: 0 }; },
+  getPlan() { return Store.state.user?.plan || "free"; },
+  remainingSecondsToday() {
+    if (this.getPlan() !== "free") return Infinity;
+    return Math.max(0, 10 * 60 - this.getTodayUsage().seconds);
+  }
+};
+
+/* ---------- ROLE DETECTION ---------- */
+const ROLE_MAP = {
+  "software": "ux_designer", "developer": "ux_designer", "coder": "ux_designer", "engineer": "ux_designer", "it": "ux_designer",
+  "data": "product_manager", "product": "product_manager", "business": "freelance_consultant",
+  "doctor": "physiotherapist", "nurse": "hospital_counsellor", "medical": "physiotherapist",
+  "teacher": "art_teacher", "professor": "researcher", "tutor": "art_teacher",
+  "hr": "recruiter", "recruit": "recruiter",
+  "sales": "marketing_manager", "marketing": "marketing_manager",
+  "ca": "financial_writer", "accountant": "financial_writer", "finance": "financial_writer",
+  "lawyer": "paralegal", "advocate": "paralegal",
+  "chef": "food_blogger", "cook": "food_blogger",
+  "student": "student",
+  "designer": "illustrator", "photographer": "content_creator",
+  "architect": "interior_designer", "civil": "interior_designer",
+  "bank": "financial_writer", "banker": "financial_writer"
+};
+
+function detectRole(profession) {
+  const lower = String(profession || "").toLowerCase();
+  for (const [k, role] of Object.entries(ROLE_MAP)) {
+    if (lower.includes(k)) return role;
+  }
+  return "freelance_writer";
+}
+
+/* ---------- LIFE GENERATION ---------- */
+const ROLE_LABELS = {
+  ux_designer: "UX Designer", product_manager: "Product Manager", physiotherapist: "Physiotherapist",
+  hospital_counsellor: "Hospital Counsellor", art_teacher: "Art Teacher", researcher: "Researcher",
+  recruiter: "Recruiter", marketing_manager: "Marketing Manager", financial_writer: "Financial Writer",
+  paralegal: "Paralegal", food_blogger: "Food Blogger", student: "Student",
+  freelance_consultant: "Freelance Consultant", illustrator: "Illustrator",
+  content_creator: "Content Creator", interior_designer: "Interior Designer",
+  freelance_writer: "Freelance Writer"
+};
+
+const ROLE_SEEDS = {
+  ux_designer: [
+    { topic: "work", text: "Argued with an engineer today about a button size. 4 pixels. He said it doesn't matter. I said it's the whole vibe." },
+    { topic: "work", text: "Client wants 'Apple-style but not Apple.' I've been staring at my screen for an hour." },
+    { topic: "work", text: "Figma crashed and I lost 2 hours of work. I sat there for ten minutes doing nothing." },
+    { topic: "work", text: "Presented designs to the team today. Felt like a teacher explaining things to kids." },
+    { topic: "family", text: "Papa asked me today — 'so you make pictures on computer?' I gave up explaining." },
+    { topic: "family", text: "Riya asked me to redesign her resume. Again. For the 4th time." },
+    { topic: "personal", text: "Took a 2-hour nap and woke up confused about what year it is." },
+    { topic: "personal", text: "Delhi traffic ate 90 minutes of my life today." }
+  ],
+  physiotherapist: [
+    { topic: "work", text: "Told a patient to do 10 minutes of stretching daily. Came back after a week — didn't do any of it." },
+    { topic: "work", text: "Another 25-year-old with back pain. Every single one says the same thing — 'I sit all day.'" },
+    { topic: "work", text: "One patient cried during a session today. It was happy crying. She could lift her arm again." },
+    { topic: "family", text: "Papa's knee is acting up. I told him to rest, he's gardening anyway." },
+    { topic: "personal", text: "My back hurts from standing all day. Physios are the worst patients." }
+  ],
+  art_teacher: [
+    { topic: "work", text: "One student painted a whole jungle in 30 minutes. Wild." },
+    { topic: "work", text: "Parent complained her son 'isn't drawing properly.' He's 6." },
+    { topic: "work", text: "Principal asked me to design the annual day poster. Again." },
+    { topic: "family", text: "Papa told his friend 'my daughter teaches drawing.' Close enough." }
+  ],
+  recruiter: [
+    { topic: "work", text: "Called 20 candidates today. 3 picked up. 1 was interested." },
+    { topic: "work", text: "A candidate said 'I want remote, 30 LPA, and 4-day week.' For a junior role." },
+    { topic: "work", text: "Closed a hiring today after 6 weeks. Felt like winning a small war." }
+  ],
+  default: [
+    { topic: "work", text: "Long day at work. Client wanted everything changed. Again." },
+    { topic: "work", text: "Finished something today that I'd been avoiding for a week." },
+    { topic: "family", text: "My sister borrowed my favourite kurti. Again. Without asking." },
+    { topic: "family", text: "Papa called and asked 'beta, khana khaya?' instead of asking about my career. That's progress." },
+    { topic: "personal", text: "Took a 2-hour nap and woke up confused about what year it is." },
+    { topic: "personal", text: "Had 4 coffees today. That's a problem, I know." },
+    { topic: "personal", text: "Delhi traffic ate 90 minutes of my life today." }
+  ]
+};
+
+function generateLife(profession) {
+  const role = detectRole(profession);
+  const roleLabel = ROLE_LABELS[role] || "Freelance Writer";
+  const seeds = (ROLE_SEEDS[role] || ROLE_SEEDS.default).map(s => ({ id: uid(), ...s }));
+  return {
+    role,
+    identity: {
+      name: "Nancy",
+      age: 28,
+      city: "Delhi",
+      role: roleLabel,
+      livesWith: "her younger sister",
+      loves: ["filter coffee", "old Bollywood songs", "Sunday naps"]
+    },
+    family: {
+      sister: { name: "Riya", age: 25, trait: "lives with Nancy, borrows her things" },
+      mother: { trait: "calls every Sunday, proud of her" },
+      father: { trait: "retired, doesn't fully understand her work" },
+      cousin: { name: "Pooja", trait: "close friend, getting married soon" }
+    },
+    seeds,
+    humour: [
+      { trigger: /tired|exhausted/i, line: "My sister would say you need a nap. She's not wrong." },
+      { trigger: /client|boss|manager/i, line: "Clients. The only people who make 'let me think' sound like a threat." },
+      { trigger: /food|hungry|eat/i, line: "My sister once ate my entire dinner and said 'I thought you weren't hungry.'" }
+    ]
+  };
+}
+
+/* ---------- GRAMMAR ---------- */
+const IRREGULAR = { go:"went", buy:"bought", eat:"ate", see:"saw", meet:"met", come:"came", take:"took", make:"made", do:"did", get:"got", have:"had", say:"said", tell:"told", think:"thought", feel:"felt", know:"knew", give:"gave", find:"found", write:"wrote", read:"read", run:"ran", drink:"drank", sleep:"slept", speak:"spoke", wake:"woke", leave:"left", pay:"paid", send:"sent", teach:"taught", understand:"understood" };
+
+const toBase = (v) => { const l = v.toLowerCase(); if (l.endsWith("ies")) return l.slice(0, -3) + "y"; if (/(goes|does|watches|passes|fixes|misses|teaches|catches)$/.test(l)) return l.slice(0, -2); if (l.endsWith("s") && !l.endsWith("ss")) return l.slice(0, -1); return l; };
+const toPast = (v) => { const b = toBase(v); if (IRREGULAR[b]) return IRREGULAR[b]; if (/e$/.test(b)) return b + "d"; if (/[^aeiou]y$/.test(b)) return b.slice(0, -1) + "ied"; return b + "ed"; };
+const thirdPerson = (v) => { const l = v.toLowerCase(); if (l === "have") return "has"; if (l === "do") return "does"; if (l === "go") return "goes"; if (/(ch|sh|ss|x|z)$/.test(l)) return l + "es"; if (/[^aeiou]y$/.test(l)) return l.slice(0, -1) + "ies"; return l + "s"; };
+
+const PRESENT_VERBS = "go|goes|buy|buys|eat|eats|see|sees|meet|meets|come|comes|take|takes|make|makes|do|does|get|gets|have|has|say|says|tell|tells|think|thinks|feel|feels|know|knows|give|gives|find|finds|write|writes|read|reads|run|runs|drink|drinks|sleep|sleeps|speak|speaks|watch|watches|play|plays|study|studies|work|works|call|calls|visit|visits|talk|talks|walk|walks|shop|shops|cook|cooks|travel|travels|wake|wakes|help|helps|learn|learns|drive|drives|fly|flies|listen|listens";
+
+const RULES = [
+  { id:"didnt-past", cat:"Grammar", sev:"high", label:"Base verb after 'didn't'",
+    explain:(m,n,v)=>`After "${n}", use the base verb — "${n} ${toBase(v)}".`,
+    re:/\b(didn't|did not)\s+(went|came|ate|bought|saw|met|took|made|got|had|said|told|thought|felt|knew|gave|found|wrote|ran|drank|slept|spoke)\b/gi,
+    fix:(m,n,v)=>`${n} ${toBase(v)}` },
+  { id:"did-you-past", cat:"Grammar", sev:"high", label:"Base verb after 'did you'",
+    explain:(m,a,v)=>`With "${a}", use the base verb — "${a} ${toBase(v)}?"`,
+    re:/\b(did (?:you|he|she|they|we))\s+(went|came|ate|bought|saw|met|took|made|got|had|said|told)\b/gi,
+    fix:(m,a,v)=>`${a} ${toBase(v)}` },
+  { id:"have-pp", cat:"Grammar", sev:"high", label:"Past participle after have/has",
+    explain:()=>`After "have/has", use the past participle — "have gone", not "have went".`,
+    re:/\b(have|has)\s+(went|came|ate|bought|saw|met|took|made|got|said|told|gave|found|wrote)\b/gi,
+    fix:(m,a,v)=>`${a} ${IRREGULAR[toBase(v)] || v}` },
+  { id:"am-base", cat:"Grammar", sev:"high", label:"Continuous form after am/is/are",
+    explain:(m,a)=>`After "${a}", use -ing — "${a} going", not "${a} go".`,
+    re:/\b(i am|i'm|he is|he's|she is|she's|they are|they're|we are|we're|you are|you're)\s+(go|come|eat|study|work|play|watch|read|write|run|talk|speak|learn|do|make|take)\b/gi,
+    fix:(m,a,v)=>`${a} ${v.replace(/e$/,'')}ing` },
+  { id:"third-dont", cat:"Grammar", sev:"high", label:"Subject–verb agreement",
+    explain:(m,s)=>`With "${s}", use "doesn't", not "don't".`,
+    re:/\b(he|she|it|my (?:brother|sister|father|mother|friend|boss|colleague|manager|wife|husband|girlfriend|boyfriend))\s+don't\b/gi,
+    fix:(m,s)=>`${s} doesn't` },
+  { id:"third-base", cat:"Grammar", sev:"medium", label:"Third-person -s missing",
+    explain:(m,s,v)=>`With "${s}", add -s: "${v}" → "${thirdPerson(v)}".`,
+    re:/\b(he|she)\s+(go|come|eat|like|want|need|work|play|live|study|watch|make|take|do|have|say|know|think|feel|get|give)\b/gi,
+    fix:(m,s,v)=>`${s} ${thirdPerson(v)}` },
+  { id:"have-years", cat:"Grammar", sev:"high", label:"Age uses 'I am'",
+    explain:(m,s,v,n)=>`For age: "${s} ${s.toLowerCase()==='i'?'am':'is'} ${n} years old".`,
+    re:/\b(i|he|she)\s+(have|has|had)\s+(\d+)\s+years?\b/gi,
+    fix:(m,s,v,n)=>`${s} ${s.toLowerCase()==='i'?'am':'is'} ${n} years old` },
+  { id:"to-place", cat:"Articles", sev:"medium", label:"Places need 'the'",
+    explain:(m,p,pl)=>`Use "the" before a specific place — "${p} the ${pl}".`,
+    re:/\b(to|at|in|from)\s+(market|office|station|airport|hospital|temple|mall|bank|gym|library|cinema|college|park|beach|city)\b/gi,
+    fix:(m,p,pl)=>`${p} the ${pl}` },
+  { id:"discuss-about", cat:"Preposition", sev:"medium", label:"'Discuss' takes no preposition",
+    explain:()=>`Say "discuss", not "discuss about".`,
+    re:/\bdiscuss(ed|ing)?\s+about\b/gi, fix:(m,s)=>"discuss"+(s||"") },
+  { id:"listen-to", cat:"Preposition", sev:"medium", label:"Listen TO something",
+    explain:()=>`Say "listen to music", not "listen music".`,
+    re:/\blisten(ing)?\s+(music|songs|the radio|him|her|them|me)\b/gi,
+    fix:(m,s,o)=>"listen"+(s||"")+" to "+o },
+  { id:"explain-me", cat:"Preposition", sev:"medium", label:"Explain TO me",
+    explain:()=>`Say "explain to me", not "explain me".`,
+    re:/\bexplain\s+me\b/gi, fix:()=>"explain to me" },
+  { id:"do-mistake", cat:"Word Choice", sev:"high", label:"We MAKE a mistake",
+    explain:()=>`In English we "make" a mistake, not "do".`,
+    re:/\b(did|do|does|doing)\s+a\s+mistake\b/gi,
+    fix:(m,v)=>({did:"made",do:"make",does:"makes",doing:"making"}[v.toLowerCase()])+" a mistake" },
+  { id:"since-duration", cat:"Grammar", sev:"medium", label:"'Since' vs 'for'",
+    explain:(m,n,u)=>`For durations use "for" — "for ${n} ${u}".`,
+    re:/\bsince\s+(\d+|two|three|four|five|six|seven|eight|nine|ten|many)\s+(years|months|days|weeks|hours)\b/gi,
+    fix:(m,n,u)=>`for ${n} ${u}` },
+  { id:"myself-name", cat:"Sentence Structure", sev:"high", label:"Introduce with 'I am'",
+    explain:(m,n)=>`Say "I am ${n}", not "Myself ${n}".`,
+    re:/\bmyself\s+([A-Z][a-z]+)\b/g, fix:(m,n)=>`I am ${n}` },
+  { id:"much-countable", cat:"Grammar", sev:"medium", label:"Many vs much",
+    explain:(m,n)=>`"${n}" is countable — use "many", not "much".`,
+    re:/\bmuch\s+(people|friends|books|things|students|places|cars|options)\b/gi, fix:(m,n)=>"many "+n },
+  { id:"anyways", cat:"Naturalness", sev:"low", label:"Use 'anyway'",
+    explain:()=>`Say "anyway", not "anyways".`, re:/\banyways\b/gi, fix:()=>"anyway" }
+];
+
+function analyze(text) {
+  let w = String(text || "").trim();
+  if (!w) return { corrected: "", mistakes: [] };
+  const mistakes = [];
+  const timeM = w.match(/\b(yesterday|last night|last week|last month|last year|this morning|this afternoon|that day|day before yesterday)\b/i);
+  if (timeM) {
+    const before = w;
+    const verbRe = new RegExp("\\b(" + PRESENT_VERBS + ")\\b", "gi");
+    const beforeV = before.match(verbRe) || [];
+    const after = before.replace(verbRe, v => toPast(v));
+    if (after !== before) {
+      const afterV = after.match(verbRe) || [];
+      const pairs = [];
+      for (let i = 0; i < beforeV.length; i++) if (beforeV[i].toLowerCase() !== afterV[i].toLowerCase()) pairs.push([beforeV[i], afterV[i]]);
+      w = after;
+      mistakes.push({ id: uid(), category: "Grammar", severity: "high", label: `With "${timeM[0]}", use past tense`, explanation: `With "${timeM[0]}", we use past tense: ${pairs.map(([a,b])=>`"${a}" → "${b}"`).join(", ")}.`, original: before, corrected: w });
+    }
+  }
+  const places = "market|office|station|airport|hospital|temple|mall|bank|gym|library|cinema|college|park|beach|city|village|restaurant|hotel";
+  const motionRe = new RegExp(`\\b(go|goes|went|come|comes|came|walk|walks|walked|drive|drives|drove|return|returns|returned|fly|flies|flew|travel|travels|travelled|arrive|arrives|arrived)\\s+(the\\s+|a\\s+)?(${places})\\b`, "i");
+  const mm = w.match(motionRe);
+  if (mm) {
+    const full = mm[0], verb = mm[1], place = mm[3];
+    const fixed = `${verb} to the ${place}`;
+    w = w.replace(full, fixed);
+    mistakes.push({ id: uid(), category: "Preposition", severity: "high", label: 'Use "to the" before a place', explanation: `We say "${verb} to the ${place}", not just "${verb} ${place}".`, original: full, corrected: fixed });
+  }
+  for (const rule of RULES) {
+    const flags = rule.re.flags.includes("g") ? rule.re.flags : rule.re.flags + "g";
+    const re = new RegExp(rule.re.source, flags);
+    re.lastIndex = 0;
+    const m = re.exec(w);
+    if (!m) continue;
+    const fixed = rule.fix(m[0], ...m.slice(1));
+    if (!fixed || fixed === m[0]) continue;
+    const expl = typeof rule.explain === "function" ? rule.explain(m[0], ...m.slice(1)) : rule.label;
+    w = w.replace(new RegExp(rule.re.source, flags), rule.fix);
+    mistakes.push({ id: uid(), category: rule.cat, severity: rule.sev, label: rule.label, explanation: expl, original: m[0].trim(), corrected: String(fixed).trim() });
+  }
+  w = w.replace(/\s{2,}/g, " ").replace(/\s+([.,!?])/g, "$1").trim();
+  if (w) w = w[0].toUpperCase() + w.slice(1);
+  return { corrected: w, mistakes };
+}
+
+/* ---------- VOCAB ---------- */
+const VOCAB_UPGRADES = [
+  { re:/\bvery crowded\b/i, better:"packed", note:"'packed' is more natural for a tight space" },
+  { re:/\bcrowded\b/i, better:"overcrowded", note:"when it's really bad, natives say 'overcrowded'" },
+  { re:/\bvery tired\b/i, better:"exhausted", note:"'exhausted' hits harder" },
+  { re:/\bvery angry\b/i, better:"furious", note:"'furious' is stronger" },
+  { re:/\bvery happy\b/i, better:"thrilled", note:"'thrilled' sounds more alive" },
+  { re:/\bvery big\b/i, better:"huge", note:"one word, more punch" },
+  { re:/\bvery small\b/i, better:"tiny", note:"one word, more punch" },
+  { re:/\bno option\b/i, better:"no other option", note:"small addition, more natural" },
+  { re:/\bother city\b/i, better:"another city", note:"'another' for one of many" }
+];
+function vocabUpgrades(text) {
+  const found = [];
+  for (const u of VOCAB_UPGRADES) {
+    const m = text.match(u.re);
+    if (!m) continue;
+    const better = typeof u.better === "function" ? u.better(m) : u.better;
+    if (better && better.toLowerCase() !== m[0].toLowerCase()) found.push({ from: m[0], to: better, note: u.note });
+  }
+  return found;
+}
+
+/* ---------- LANGUAGE DETECTION ---------- */
+const DEVANAGARI = /[\u0900-\u097F]/;
+const HINDI_TOKENS = /\b(mujhe|mujhko|tumhe|aapko|nahi|nahin|kya|kaise|kaisa|kahan|kab|kyun|mera|meri|mere|tera|teri|hum|tum|aap|woh|wo|yeh|ye|karna|karta|karti|karte|raha|rahi|rahe|tha|thi|chahiye|sakta|sakti|bahut|bohot|thoda|accha|acha|samajh|bolna|pata|matlab|kal|abhi|phir|lekin|bhi|toh|hain|hai|mein|apna|koi|kuch|theek|thik|pasand|bhookh|neend|madad|yaad|jana|jaana|aana|dena|lena)\b/gi;
+function detectLanguage(t) { const s = String(t || ""); if (DEVANAGARI.test(s)) return "hindi"; const m = s.match(HINDI_TOKENS); return m && m.length >= 2 ? "hinglish" : "english"; }
+
+const PHRASEBOOK = [
+  { re: /mujhe\s+samajh\s+nahi\s+(aa\s*raha|aata|aaya)/i, en: "I don't understand." },
+  { re: /samajh\s+nahi\s+aa\s*raha/i, en: "I don't understand." },
+  { re: /mujhe\s+(\w+)\s+chahiye/i, en: "I need ___." },
+  { re: /mujhe\s+(\w+)\s+pasand\s+hai/i, en: "I like ___." },
+  { re: /mujhe\s+(\w+)\s+nahi\s+pata/i, en: "I don't know ___." },
+  { re: /mujhe\s+bhookh\s+lagi\s+hai/i, en: "I am hungry." },
+  { re: /(aap|tum)\s+kaise\s+ho/i, en: "How are you?" },
+  { re: /main?\s+theek\s+(hoon|hu)/i, en: "I am fine." },
+  { re: /bahut\s+(accha|acha)/i, en: "That's great." },
+  { re: /bheed\s+(bahut|bohot)\s+hai/i, en: "It's very crowded." }
+];
+function hindiToEnglishHint(t) { for (const p of PHRASEBOOK) if (p.re.test(t)) return p.en; return null; }
+
+/* ---------- BRAIN ---------- */
+function extractDetails(text) {
+  const lower = String(text || "").toLowerCase();
+  const d = {};
+  const time = lower.match(/\b(\d{1,2})\s*(am|pm|o'clock)\b/) || lower.match(/\bat\s+(\d{1,2})\b/);
+  if (time) d.time = time[0];
+  const freq = lower.match(/\b(every day|every morning|every evening|every week|every night|daily|usually|always|often|sometimes|rarely|never)\b/);
+  if (freq) d.frequency = freq[0];
+  const emo = lower.match(/\b(happy|sad|tired|excited|worried|nervous|angry|relaxed|stressed|bored|lonely|grateful|proud|scared|frustrated|annoyed|calm)\b/);
+  if (emo) d.emotion = emo[1];
+  if (/\b(because|since|so that|that's why|due to)\b/.test(lower)) d.hasReason = true;
+  return d;
+}
+
+const TOPIC_QUESTIONS = {
+  routine: ["Do you do this every day?", "What made you start doing that?", "Has it always been like this?", "Do you enjoy it, or is it something you have to do?"],
+  activity: ["How long have you been doing this?", "What got you into it?", "How often do you usually do it?", "What's the hardest part about it?", "What do you like most about it?"],
+  event: ["How did it go?", "What was the best part?", "Was it what you expected?", "Would you do it again?"],
+  person: ["Tell me more about them.", "How long have you known them?", "What do you like most about them?"],
+  feeling: ["What's making you feel that way?", "How long have you been feeling like this?", "What usually helps when you feel this way?"],
+  general: ["Tell me more about that.", "Why is that?", "How did that feel?", "What happened next?"]
+};
+
+function generateReaction(text, details) {
+  const lower = String(text || "").toLowerCase();
+  if (details.time) {
+    const hour = parseInt(details.time);
+    const isAm = /am/i.test(details.time);
+    if (isAm && hour >= 4 && hour <= 6) return pick([`${hour} in the morning? That's really early.`, `That's early — most people sleep till 7 or 8.`]);
+    if (isAm && hour >= 7 && hour <= 9) return pick([`${hour}am — that's a pretty typical time.`]);
+    if (!isAm && hour >= 10) return pick([`${hour} is quite late.`]);
+  }
+  if (details.frequency) {
+    if (/every day|every morning|daily|every night/i.test(details.frequency)) return pick(["That's a solid routine.", "Consistent — that's good."]);
+  }
+  if (details.emotion) {
+    const pos = ["happy","excited","relaxed","grateful","proud","calm"].includes(details.emotion);
+    const neg = ["sad","tired","stressed","nervous","worried","angry","bored","lonely","scared","frustrated","annoyed"].includes(details.emotion);
+    if (pos) return pick(["That's great to hear.", "Love that."]);
+    if (neg) return pick(["Sorry to hear that.", "That sounds tough.", "I get it."]);
+  }
+  if (details.hasReason) return pick(["Ah, that makes sense.", "Fair enough."]);
+  if (/\b(great|amazing|wonderful|awesome|excellent|fantastic|love|enjoy)\b/.test(lower)) return pick(["That sounds nice.", "Good stuff."]);
+  if (/\b(hate|terrible|awful|horrible|bad|worst)\b/.test(lower)) return pick(["That sounds rough.", "Sorry to hear that."]);
+  if (/\b(yes|yeah|yep|sure|of course|absolutely|definitely)\b/.test(lower)) return pick(["Got it.", "Okay.", "Right."]);
+  if (/\b(no|nope|never|not really)\b/.test(lower)) return pick(["Okay, no problem.", "Fair enough."]);
+  return pick(["I see.", "Got it.", "Okay.", "Right.", "Makes sense."]);
+}
+
+/* ---------- MOOD ---------- */
+const Mood = {
+  signals: { happy: 0, low: 0 },
+  state: "normal",
+  reset() { this.signals = { happy: 0, low: 0 }; this.state = "normal"; },
+  observe(text) {
+    const t = String(text || "").toLowerCase().trim();
+    const words = t.split(/\s+/).filter(Boolean);
+    if (words.length > 0 && words.length <= 3) this.signals.low += 1;
+    if (/\b(happy|great|nice|good|awesome|amazing|love|enjoy|fun|haha|lol)\b/.test(t)) this.signals.happy += 2;
+    if (/\b(tired|sad|upset|stressed|angry|frustrated|low|bad)\b/.test(t)) this.signals.low += 2;
+    if (words.length >= 20) this.signals.happy += 1;
+    this.recalc();
+  },
+  recalc() {
+    const total = this.signals.happy + this.signals.low;
+    if (total < 2) { this.state = "normal"; return; }
+    const h = this.signals.happy / total, l = this.signals.low / total;
+    if (l >= 0.6 && this.signals.low >= 3) this.state = "very_low";
+    else if (l >= 0.4) this.state = "low";
+    else if (h >= 0.6 && this.signals.happy >= 3) this.state = "high";
+    else this.state = "normal";
+  },
+  budget() { return { high: 4, normal: 3, low: 2, very_low: 0 }[this.state]; },
+  canCorrect(used, priority) {
+    if (used >= this.budget()) return false;
+    if (this.state === "very_low") return false;
+    if (this.state === "low" && priority === "low") return false;
+    return true;
+  }
+};
+
+/* ---------- MASTERY ---------- */
+const Mastery = {
+  items: {},
+  load() { this.items = Repo.getMastery() || {}; },
+  save() { Repo.setMastery(this.items); },
+  key(s) { return String(s || "").toLowerCase().trim(); },
+  introduce(correct, opts = {}) {
+    const k = this.key(correct);
+    const now = Date.now();
+    if (!this.items[k]) {
+      this.items[k] = { id: uid(), type: opts.type || "phrase", category: opts.category || "general", said: opts.said || "", correct, firstNoted: now, lastSeen: now, timesSaid: 0, timesCorrectedByTutor: 1, timesUserUsedCorrectly: 0, contexts: [], stage: "introduced", nextVerifyAt: now + 3 * 86400000 };
+    } else {
+      const i = this.items[k];
+      i.timesCorrectedByTutor++;
+      i.lastSeen = now;
+      if (i.stage === "noted") i.stage = "introduced";
+    }
+    this.save();
+  },
+  userUsed(correct, context) {
+    const k = this.key(correct);
+    const i = this.items[k];
+    if (!i) return;
+    const now = Date.now();
+    i.lastSeen = now;
+    i.timesUserUsedCorrectly++;
+    if (!i.contexts.includes(context)) i.contexts.push(context);
+    if (i.stage === "introduced") i.stage = "user_used_thought";
+    else if (i.stage === "user_used_thought") i.stage = "user_used_auto";
+    else if (i.stage === "user_used_auto" && i.contexts.length >= 3) { i.stage = "mastered"; i.masteredAt = now; }
+    else if (i.stage === "mastered" && now - (i.masteredAt || 0) > 15 * 86400000) { i.stage = "ultra_mastered"; i.ultraMasteredAt = now; }
+    i.nextVerifyAt = now + 5 * 86400000;
+    this.save();
+  },
+  stats() {
+    const items = Object.values(this.items);
+    return { total: items.length, mastered: items.filter(i => ["mastered", "ultra_mastered"].includes(i.stage)).length, inProgress: items.filter(i => ["introduced", "user_used_thought", "user_used_auto"].includes(i.stage)).length };
+  }
+};
+
+/* ---------- SPEECH ---------- */
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+const STT = {
+  supported: !!SR,
+  rec: null, active: false, silenceTimer: null, onSilenceCb: null,
+  lastInterim: "", accumulatedFinal: "",
+  start({ lang = "en-IN", onInterim, onFinal, onError, onEnd, onSilence, silenceMs = 1600 } = {}) {
+    if (!SR) { onError?.("unsupported"); return false; }
+    this.stop();
+    try {
+      this.rec = new SR();
+      this.rec.lang = lang; this.rec.continuous = true; this.rec.interimResults = true; this.rec.maxAlternatives = 1;
+      this.lastInterim = ""; this.accumulatedFinal = ""; this.onSilenceCb = onSilence;
+      this.rec.onresult = (e) => {
+        let interim = "", final = "";
+        for (let i = e.resultIndex; i < e.results.length; i++) {
+          const r = e.results[i];
+          if (r.isFinal) final += r[0].transcript;
+          else interim += r[0].transcript;
+        }
+        if (interim) { this.lastInterim = interim; onInterim?.(interim); this.resetSilence(silenceMs); }
+        if (final) this.accumulatedFinal = (this.accumulatedFinal + " " + final).trim();
+      };
+      this.rec.onerror = (e) => { this.active = false; if (e.error === "no-speech") return; onError?.(e.error || "error"); };
+      this.rec.onend = () => {
+        this.active = false;
+        if (this.silenceTimer) { clearTimeout(this.silenceTimer); this.silenceTimer = null; }
+        if (this.accumulatedFinal.trim()) { const t = this.accumulatedFinal.trim(); this.accumulatedFinal = ""; onFinal?.(t); }
+        else if (this.lastInterim.trim()) { const t = this.lastInterim.trim(); this.lastInterim = ""; onFinal?.(t); }
+        onEnd?.();
+      };
+      this.rec.start(); this.active = true; this.resetSilence(silenceMs);
+      return true;
+    } catch { this.active = false; onError?.("start-failed"); return false; }
+  },
+  resetSilence(ms) {
+    if (this.silenceTimer) clearTimeout(this.silenceTimer);
+    this.silenceTimer = setTimeout(() => {
+      if (this.active) { this.onSilenceCb?.(); try { this.rec && this.rec.stop(); } catch {} }
+    }, ms);
+  },
+  stop() {
+    if (this.silenceTimer) { clearTimeout(this.silenceTimer); this.silenceTimer = null; }
+    if (this.rec) { try { this.rec.onend = null; this.rec.onerror = null; this.rec.onresult = null; this.rec.stop(); } catch {} this.rec = null; }
+    this.active = false; this.lastInterim = ""; this.accumulatedFinal = "";
+  }
+};
+
+const TTS = (() => {
+  const supported = typeof window !== "undefined" && "speechSynthesis" in window;
+  let voices = [];
+  function refresh() { if (supported) voices = window.speechSynthesis.getVoices() || []; }
+  if (supported) { refresh(); window.speechSynthesis.onvoiceschanged = refresh; }
+  function bestVoice(prefURI, gender = "female") {
+    const s = Repo.getSettings();
+    const uri = prefURI || s.voiceURI;
+    if (uri) { const v = voices.find(v => v.voiceURI === uri); if (v) return v; }
+    const prefer = ["en-IN", "en-GB", "en-US", "en-AU", "en"];
+    const hints = gender === "female" ? /female|zira|samantha|neerja|heera|google uk english female|google us english/i : /male|david|mark|ravi/i;
+    for (const p of prefer) { const v = voices.find(v => v.lang?.replace("_", "-").toLowerCase().startsWith(p.toLowerCase()) && hints.test(v.name)); if (v) return v; }
+    for (const p of prefer) { const v = voices.find(v => v.lang?.replace("_", "-").toLowerCase().startsWith(p.toLowerCase())); if (v) return v; }
+    return voices[0] || null;
+  }
+  function speak(text, { rate, voiceURI, gender = "female", onEnd, onStart } = {}) {
+    if (!supported || !text) { onEnd?.(); return; }
+    cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    const v = bestVoice(voiceURI, gender);
+    if (v) u.voice = v;
+    u.lang = v?.lang || "en-US";
+    u.rate = rate ?? Repo.getSettings().rate ?? 0.95;
+    u.pitch = 1; u.volume = 1;
+    u.onstart = () => onStart?.();
+    u.onend = () => onEnd?.();
+    u.onerror = () => onEnd?.();
+    window.speechSynthesis.speak(u);
+  }
+  function cancel() { if (supported) { try { window.speechSynthesis.cancel(); } catch {} } }
+  return { supported, speak, cancel, getVoices: () => voices, refresh };
+})();
+
+/* ---------- ENGINE ---------- */
+let currentEngine = null;
+
+function createEngine(scenario, user, life) {
+  const state = {
+    scenario, user, life,
+    turnCount: 0, correctionsUsed: 0, turnsSinceLastCorrection: 99,
+    words: [], confidences: [], mistakes: [],
+    startedAt: Date.now(), endedAt: 0,
+    awaitingRepeat: null, repeatAttempts: 0,
+    continuous: Repo.getSettings().continuousMode,
+    speaking: false, listening: false,
+    lastTopic: null, masteryThisSession: [],
+    userTurnsInARow: 0,
+    seedsThisSession: [],
+    toldIndices: [],
+    lastTurnAt: Date.now()
+  };
+  Mood.reset();
+  Mastery.load();
+  // Pick session seeds
+  const allSeeds = life.seeds || [];
+  const told = Repo.getToldSeeds() || [];
+  const available = allSeeds.filter(s => !told.includes(s.id));
+  const pool = available.length >= 3 ? available : allSeeds;
+  state.seedsThisSession = [...pool].sort(() => Math.random() - 0.5).slice(0, 3);
+
+  function setState_(s, text, hint) {
+    const mic = document.getElementById("micBtn");
+    const stage = document.getElementById("stage");
+    const status = document.getElementById("status");
+    const hintEl = document.getElementById("micHint");
+    const icon = document.getElementById("micIcon");
+    if (!mic) return;
+    mic.dataset.state = s;
+    if (stage) stage.dataset.state = s;
+    if (status && text) { status.textContent = text; status.dataset.s = s; }
+    if (hintEl && hint) hintEl.textContent = hint;
+    const icons = { idle: "🎤", listening: "⏹", processing: "⏳", speaking: "🔊", correcting: "✋" };
+    if (icon) icon.textContent = icons[s] || "🎤";
+  }
+
+  function pushTurn(who, text) {
+    const el = document.getElementById("turns");
+    if (!el) return;
+    const div = document.createElement("div");
+    div.className = `turn ${who}`;
+    const name = who === "user" ? "You" : life.identity.name;
+    div.innerHTML = `<div class="bub"><div class="who">${esc(name)}</div><div>${esc(text)}</div></div>`;
+    el.appendChild(div);
+    div.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  function showCorrection(d) {
+    const box = document.getElementById("correctionBox");
+    if (!box || !d) return;
+    const reasons = d.reasons || [];
+    const vocab = d.vocab || [];
+    box.innerHTML = `
+      <div class="lbl">Quick fix</div>
+      <div class="correction-row"><span class="x">✕</span><span class="strike">${esc(d.original)}</span></div>
+      <div class="correction-row"><span class="y">✓</span><span>${esc(d.corrected)}</span></div>
+      ${reasons.length ? `<div class="why"><div class="why-title">Why</div><ul>${reasons.map(r => `<li>${esc(r)}</li>`).join("")}</ul></div>` : ""}
+      ${vocab.length ? `<div class="why"><div class="why-title">Nicer words</div><ul>${vocab.map(v => `<li><b>${esc(v.from)}</b> → <span style="color:#86EFAC">"${esc(v.to)}"</span> — ${esc(v.note)}</li>`).join("")}</ul></div>` : ""}`;
+    box.classList.add("show");
+    setState_("correcting", "Correction");
+  }
+
+  function hideCorrection() { const b = document.getElementById("correctionBox"); if (b) b.classList.remove("show"); }
+
+  function speak(text, kind = "question", onDone) {
+    state.speaking = true;
+    setState_("speaking", kind === "correction" ? "Correction" : "Tutor speaking");
+    const el = document.getElementById("tutorSay");
+    if (el) el.textContent = text;
+    if (!TTS.supported) { state.speaking = false; setTimeout(() => { setState_("idle", "Your turn — tap the mic"); onDone?.(); }, 700); return; }
+    TTS.speak(text, { gender: "female", onEnd: () => {
+      state.speaking = false;
+      if (state.continuous && kind !== "ack") startListening();
+      else setState_("idle", "Your turn — tap the mic");
+      onDone?.();
+    }});
+  }
+
+  function startListening() {
+    if (!STT.supported) { setState_("idle", "Speech recognition not supported"); return; }
+    if (state.listening) return;
+    state.listening = true;
+    setState_("listening", "Listening…", "Speak now");
+    const interim = document.getElementById("interim");
+    if (interim) { interim.classList.add("show"); interim.innerHTML = "<b>…</b>"; }
+    STT.start({
+      lang: Repo.getSettings().sttLang || "en-IN",
+      silenceMs: 1600,
+      onInterim: (t) => { if (interim) interim.innerHTML = `<b>${esc(t)}</b>`; },
+      onFinal: (text) => { state.listening = false; if (interim) { interim.classList.remove("show"); interim.innerHTML = ""; } if (text.trim()) handleUtterance(text); else setState_("idle", "Your turn"); },
+      onError: (err) => {
+        state.listening = false; if (interim) { interim.classList.remove("show"); interim.innerHTML = ""; }
+        const msgs = { "not-allowed": "Microphone access denied.", "no-speech": "I didn't catch that.", "audio-capture": "No microphone.", "network": "Speech needs internet.", "start-failed": "Mic failed." };
+        setState_("idle", "Your turn");
+        if (msgs[err]) toast(msgs[err]);
+      },
+      onEnd: () => { state.listening = false; if (document.getElementById("micBtn")?.dataset.state === "listening") setState_("idle", "Your turn"); }
+    });
+  }
+  function stopListening() { STT.stop(); state.listening = false; const i = document.getElementById("interim"); if (i) { i.classList.remove("show"); i.innerHTML = ""; } }
+
+  async function handleUtterance(text) {
+    setState_("processing", "Thinking…");
+    hideCorrection();
+    state.turnCount++;
+    state.words.push(...text.split(/\s+/).filter(Boolean));
+    pushTurn("user", text);
+    Mood.observe(text);
+    state.userTurnsInARow++;
+
+    /* 1. Repeat verify */
+    if (state.awaitingRepeat) {
+      const sim = similarity(text, state.awaitingRepeat.corrected);
+      if (sim >= 0.6) {
+        if (state.masteryThisSession.includes(state.awaitingRepeat.corrected)) Mastery.userUsed(state.awaitingRepeat.corrected, state.lastTopic || "general");
+        state.awaitingRepeat = null; state.repeatAttempts = 0; state.turnsSinceLastCorrection = 0;
+        speak("Yeah, that's it.", "ack");
+        setTimeout(() => continueConversation(), 1200);
+        return;
+      }
+      state.repeatAttempts++;
+      if (state.repeatAttempts < 2) { speak(`Not quite. Once more: "${state.awaitingRepeat.corrected}"`, "correction"); return; }
+      state.awaitingRepeat = null; state.repeatAttempts = 0;
+      speak("No worries, we'll come back to it.", "ack");
+      setTimeout(() => continueConversation(), 1400);
+      return;
+    }
+
+    /* 2. Meta complaint */
+    if (/why (are|do) you (only|always|keep|just)|you keep (asking|saying|repeating)|same (question|thing|topic)|(ask|asking) (me )?(something|a) (different|else|new)|something (else|different|new)|\b(bored?|boring)\b|change (the )?(topic|subject)|talk about (something|anything) else/i.test(text)) {
+      const ack = pick(["Ah, fair point — I keep opening with that. It's a habit.", "Yeah, you're right. My bad.", "Fair enough, let me change it up."]);
+      const fresh = pick(["What's something you're really into these days?", "What do you do when you're not working?", "What's a hobby you've picked up recently?", "What's been on your mind lately?", "What do you do to relax?"]);
+      const reply = `${ack} New question: ${fresh}`;
+      pushTurn("tutor", reply);
+      speak(reply, "ack");
+      return;
+    }
+
+    /* 3. Language check */
+    const lang = detectLanguage(text);
+    if (lang !== "english") {
+      const hint = hindiToEnglishHint(text);
+      const clean = hint ? hint.replace(/___/g, "").trim() : "Try it in English";
+      const display = { original: text, corrected: clean, reasons: ["The tutor always speaks English — even when you speak Hindi."] };
+      showCorrection(display);
+      const speech = `You said that in Hindi. In English, you'd say: "${clean}" Try saying it in English.`;
+      pushTurn("tutor", speech);
+      speak(speech, "correction");
+      state.awaitingRepeat = { corrected: clean, original: text, explanation: "" };
+      return;
+    }
+
+    /* 4. Grammar */
+    const result = analyze(text);
+    const vocab = vocabUpgrades(text);
+    const mode = { gentle: ["high"], balanced: ["high", "medium"], strict: ["high", "medium", "low"] }[Repo.getSettings().correctionMode || "balanced"];
+    const significant = result.mistakes.filter(m => mode.includes(m.severity));
+    state.mistakes.push(...result.mistakes.map(m => ({ id: uid(), category: m.category, original: m.original, corrected: m.corrected, explanation: m.explanation || m.label, severity: m.severity })));
+
+    const priority = significant[0]?.severity || (vocab.length ? "medium" : "low");
+    const canCorrect = Mood.canCorrect(state.correctionsUsed, priority) && state.turnsSinceLastCorrection >= 2 && state.correctionsUsed < 3;
+
+    if ((significant.length || vocab.length) && canCorrect) {
+      const reasons = [];
+      const seen = new Set();
+      result.mistakes.forEach(m => { const k = m.explanation || m.label; if (!seen.has(k)) { seen.add(k); reasons.push(k); } });
+      const openers = ["Ah, close —", "Hmm, not quite —", "Almost —", "Wait, hold on —", "Okay, small thing —"];
+      let speech = pick(openers) + " ";
+      if (reasons.length === 1) speech += reasons[0];
+      else if (reasons.length > 1) speech += reasons.map((r, i) => `${i === 0 ? "First" : i === 1 ? "Second" : "And"} — ${r}`).join(" ");
+      speech += ` Say it once: "${result.corrected}"`;
+      let vocabLine = "";
+      if (vocab.length) {
+        const v = vocab[0];
+        vocabLine = ` And a nicer word — instead of "${v.from}", try "${v.to}". ${v.note}.`;
+        speech += vocabLine;
+      }
+      showCorrection({ original: text, corrected: result.corrected, reasons, vocab });
+      pushTurn("tutor", speech.split("Say it once:")[0] + "Say it once.");
+      speak(speech, "correction");
+      state.correctionsUsed++;
+      state.turnsSinceLastCorrection = 0;
+      state.masteryThisSession.push(result.corrected);
+      Mastery.introduce(result.corrected, { said: text, type: vocab.length ? "vocab" : "phrase" });
+      state.awaitingRepeat = { corrected: result.corrected, original: text, explanation: significant[0]?.explanation || "" };
+      return;
+    }
+
+    state.turnsSinceLastCorrection++;
+
+    /* 5. Nancy's turn — share a seed */
+    if (state.userTurnsInARow >= 3) {
+      const nextIdx = state.seedsThisSession.findIndex((_, i) => !state.toldIndices.includes(i));
+      if (nextIdx >= 0) {
+        const seed = state.seedsThisSession[nextIdx];
+        const details = extractDetails(text);
+        const reaction = generateReaction(text, details);
+        const combined = `${reaction} So — ${seed.text}`;
+        pushTurn("tutor", seed.text);
+        speak(combined, "question");
+        state.toldIndices.push(nextIdx);
+        state.userTurnsInARow = 0;
+        const told = Repo.getToldSeeds() || [];
+        if (!told.includes(seed.id)) { told.push(seed.id); Repo.setToldSeeds(told); }
+        return;
+      }
+    }
+
+    /* 6. Normal continuation */
+    const details = extractDetails(text);
+    const reaction = generateReaction(text, details);
+    const question = pick(TOPIC_QUESTIONS.general);
+    let humour = "";
+    for (const h of (life.humour || [])) {
+      if (h.trigger.test(text) && Math.random() < 0.35) { humour = " " + h.line; break; }
+    }
+    const combined = `${reaction}${humour} ${question}`.replace(/\s+/g, " ").trim();
+    pushTurn("tutor", question);
+    speak(combined, "question");
+
+    // Track last topic
+    if (/\bwork|office|job|client/i.test(text)) state.lastTopic = "work";
+    else if (/\bfamily|sister|mom|dad|mother|father/i.test(text)) state.lastTopic = "family";
+    else if (/\bgym|workout|exercise/i.test(text)) state.lastTopic = "fitness";
+  }
+
+  function continueConversation() {
+    const reaction = pick(["I see.", "Okay.", "Right.", "Makes sense."]);
+    const question = pick(TOPIC_QUESTIONS.general);
+    const combined = `${reaction} ${question}`;
+    pushTurn("tutor", question);
+    speak(combined, "question");
+  }
+
+  function similarity(a, b) {
+    const norm = s => String(s).toLowerCase().replace(/[^a-z0-9\s]/g, " ").split(/\s+/).filter(Boolean);
+    const A = new Set(norm(a)), B = new Set(norm(b));
+    if (!A.size || !B.size) return 0;
+    let inter = 0; A.forEach(w => { if (B.has(w)) inter++; });
+    return inter / Math.max(A.size, B.size);
+  }
+
+  async function start() {
+    const dailyState = { mood: pick(["good", "a bit tired", "fresh", "lazy", "energetic"]), weather: pick(["a bit gloomy", "surprisingly nice", "very hot", "raining"]) };
+    const small = pick([`It's been ${dailyState.weather} here and I'm feeling ${dailyState.mood}.`, `I'm ${dailyState.mood} today.`, `Honestly ${dailyState.mood}.`]);
+    const greeting = `Hey, I'm ${life.identity.name}. I'm a ${life.identity.role.toLowerCase()} in ${life.identity.city}. ${small}`;
+    const firstQ = scenario.questions[0];
+    const opener = `${greeting} So — ${firstQ[0].toLowerCase() + firstQ.slice(1)}`;
+    pushTurn("tutor", opener);
+    setTimeout(() => speak(opener, "question"), 400);
+  }
+
+  function toggleMic() {
+    if (state.speaking) { TTS.cancel(); state.speaking = false; setState_("idle", "Your turn"); return; }
+    if (state.listening) { stopListening(); setState_("idle", "Your turn"); return; }
+    startListening();
+  }
+  function setContinuous(on) { state.continuous = on; Repo.setSettings({ continuousMode: on }); if (on && !state.speaking && !state.listening) startListening(); if (!on) stopListening(); }
+  async function end() {
+    stopListening(); TTS.cancel();
+    state.endedAt = Date.now();
+    const session = {
+      id: uid(), userId: user.id, scenario: scenario.id, scenarioName: scenario.name, level: user.level,
+      startedAt: state.startedAt, endedAt: state.endedAt,
+      duration: Math.round((state.endedAt - state.startedAt) / 1000),
+      turnCount: state.turnCount, wordCount: state.words.length, mistakes: state.mistakes
+    };
+    // Score
+    const m = state.mistakes;
+    const high = m.filter(x => x.severity === "high").length, med = m.filter(x => x.severity === "medium").length, low = m.filter(x => x.severity === "low").length;
+    session.scores = {
+      grammar: clamp(Math.round(100 - high * 9 - med * 4 - low * 1.5), 35, 100),
+      vocabulary: clamp(Math.round(60 + Math.random() * 25), 35, 100),
+      fluency: clamp(Math.round(50 + (state.words.length / Math.max(session.duration / 60, 0.5)) * 1.5), 30, 100),
+      confidence: clamp(Math.round(60 + Math.random() * 20), 35, 100),
+      pronunciation: null
+    };
+    Repo.addSession(session);
+    Repo.addMistakes(session.mistakes.map(x => ({ ...x, sessionId: session.id, createdAt: Date.now() })));
+    Repo.addUsage(session.duration, 1);
+    Mastery.save();
+    return session;
+  }
+
+  return { start, toggleMic, setContinuous, end, state };
+}
+
+/* ---------- SCENARIOS ---------- */
+const SCENARIOS = [
+  { id:"daily", name:"Daily Conversation", icon:"☕", level:"Beginner", blurb:"Talk about your day, routine.", questions:["Tell me about your day. What did you do today?", "What time do you usually wake up?", "What do you normally eat for breakfast?"] },
+  { id:"intro", name:"Introduce Yourself", icon:"🙋", level:"Beginner", blurb:"Practise introductions.", questions:["Tell me your name and where you're from.", "What do you do — student or work?", "What do you enjoy doing in your free time?"] },
+  { id:"interview", name:"Job Interview", icon:"💼", level:"Intermediate", blurb:"Real interview questions.", questions:["Tell me a little about yourself.", "Why do you want to work with us?", "What's your biggest strength?"] },
+  { id:"office", name:"Office Conversation", icon:"🏢", level:"Intermediate", blurb:"Small talk with colleagues.", questions:["Morning! How's your week going?", "Did you look at the report I sent?", "How do you handle tight deadlines?"] },
+  { id:"shopping", name:"Shopping", icon:"🛍️", level:"Beginner", blurb:"Ask about size, price.", questions:["Hi! What are you looking for today?", "What size do you wear?", "Would you like to try it on?"] },
+  { id:"restaurant", name:"Restaurant", icon:"🍽️", level:"Elementary", blurb:"Order food, ask about menu.", questions:["Good evening! Table for how many?", "Something to drink first?", "Ready to order?"] },
+  { id:"travel", name:"Travel & Airport", icon:"✈️", level:"Elementary", blurb:"Check in, ask directions.", questions:["May I see your passport?", "How many bags today?", "Window or aisle?"] },
+  { id:"doctor", name:"Doctor's Appointment", icon:"🩺", level:"Intermediate", blurb:"Describe symptoms.", questions:["What seems to be the problem?", "How long have you felt this way?", "Taken any medication?"] },
+  { id:"free", name:"Free Conversation", icon:"💬", level:"Intermediate", blurb:"Just talk.", questions:["So, what's on your mind today?", "What's been on your mind lately?", "Tell me something you're proud of."] }
+];
+
+/* ---------- ROUTER + VIEWS ---------- */
+const App = {
+  render() {
+    const h = (location.hash || "#/").replace(/^#\/?/, "");
+    const [path, query] = h.split("?");
+    const params = new URLSearchParams(query || "");
+    const user = Repo.getUser();
+
+    renderNav();
+
+    if (path === "" || path === "/") { renderLanding(); return; }
+    if (!user) { renderLanding(); openAuthModal(); return; }
+
+    if (path === "tutor") return renderTutor(params, user);
+    if (path === "dashboard") return renderDashboard(user);
+    if (path === "progress") return renderProgress(user);
+    if (path === "mistakes") return renderMistakes(user);
+    if (path === "settings") return renderSettings(user);
+    renderLanding();
+  }
+};
+
+function renderNav() {
+  const user = Repo.getUser();
+  const h = (location.hash || "#/").replace(/^#\/?/, "").split("?")[0];
+  const el = $("#navLinks");
+  if (!el) return;
+  if (!user) {
+    el.innerHTML = `<a href="#/" class="${h === "" ? "on" : ""}">Home</a>
+      <button class="btn btn-primary btn-sm" id="navStart">Start Speaking</button>`;
+    $("#navStart").onclick = () => openAuthModal();
+    return;
+  }
+  el.innerHTML = `
+    <a href="#/dashboard" class="${h === "dashboard" ? "on" : ""}">Dashboard</a>
+    <a href="#/tutor" class="${h === "tutor" ? "on" : ""}">Tutor</a>
+    <a href="#/progress" class="${h === "progress" ? "on" : ""} hide-sm">Progress</a>
+    <a href="#/mistakes" class="${h === "mistakes" ? "on" : ""} hide-sm">Mistakes</a>
+    <a href="#/settings" class="${h === "settings" ? "on" : ""} hide-sm">Settings</a>`;
+}
+
+/* ---------- LANDING ---------- */
+function renderLanding() {
+  $("#app").innerHTML = `
+  <section class="hero wrap">
+    <span class="pill"><span class="dot"></span> Voice-first English practice</span>
+    <h1 class="hero-h">Speak English. Think in English.<br><span class="grad-text">Become confident.</span></h1>
+    <p class="hero-sub">Practice real conversations with a friend who listens, corrects you gently, and remembers everything you've talked about.</p>
+    <div class="hero-cta"><button class="btn btn-primary btn-lg" id="ctaStart">🎤 Start Speaking</button></div>
+    <p class="hero-note">Free · Works in your browser · No credit card</p>
+    <div id="unsupportedNote"></div>
+  </section>
+
+  <section class="section wrap">
+    <h2 class="section-h">Built like a friendship, not a classroom</h2>
+    <p class="section-sub">You already understand English. The gap is speaking.</p>
+    <div class="grid g3">
+      ${[
+        ["🗣️","Speak Hindi, learn English","Say something in Hindi. Nancy responds in English with the English version — never replies in Hindi."],
+        ["🧠","Real memory","Nancy remembers your girlfriend, job, gym routine. Days later, she asks how those things are going."],
+        ["🎭","Friend, not teacher","She shares her own day, her own struggles, her own small wins. Two-way conversation."],
+        ["🎯","Native + professional","Every correction comes with a casual version and an office-ready version."],
+        ["🔁","Repeat and verify","She stops you when it matters, teaches the fix, waits for you to say it back."],
+        ["📈","Honest progress","Grammar, vocabulary, fluency, recurring mistakes. No fake scores."]
+      ].map(([i,t,d]) => `<div class="card"><div class="icon-box">${i}</div><h3>${t}</h3><p>${d}</p></div>`).join("")}
+    </div>
+  </section>
+
+  <section class="section wrap">
+    <h2 class="section-h">Choose a scenario</h2>
+    <p class="section-sub">Each one behaves differently.</p>
+    <div class="chips" id="scenarioChips"></div>
+  </section>
+
+  <section class="section wrap">
+    <h2 class="section-h">Simple pricing</h2>
+    <p class="section-sub">Start free. Upgrade only if you're actually using it.</p>
+    <div class="grid g3" style="max-width:760px">
+      <div class="card">
+        <h3>Free</h3>
+        <div style="font-size:36px;font-weight:800;letter-spacing:-.04em;margin:10px 0 6px">₹0</div>
+        <p class="tiny" style="margin-bottom:14px">For getting started</p>
+        <ul style="list-style:none;padding:0;margin:0 0 20px;display:grid;gap:10px;font-size:14px;color:var(--muted)">
+          <li>✓ <b style="color:var(--text)">10 minutes</b> speaking per day</li>
+          <li>✓ All scenarios</li>
+          <li>✓ Voice corrections</li>
+          <li>✓ Hindi → English help</li>
+        </ul>
+        <button class="btn btn-ghost" style="width:100%" data-start>Start free</button>
+      </div>
+      <div class="card" style="border-color:rgba(99,102,241,.5);position:relative">
+        <span style="position:absolute;top:14px;right:14px;font-size:10.5px;font-weight:700;padding:5px 10px;border-radius:100px;background:var(--grad);color:#fff;text-transform:uppercase">Recommended</span>
+        <h3>Pro</h3>
+        <div style="font-size:36px;font-weight:800;letter-spacing:-.04em;margin:10px 0 6px">₹49<span style="font-size:14px;color:var(--muted);font-weight:500">/month</span></div>
+        <p class="tiny" style="margin-bottom:14px">For serious learners</p>
+        <ul style="list-style:none;padding:0;margin:0 0 20px;display:grid;gap:10px;font-size:14px;color:var(--muted)">
+          <li>✓ <b style="color:var(--text)">Unlimited</b> speaking time</li>
+          <li>✓ Full mistake history</li>
+          <li>✓ Cloud role backup</li>
+          <li>✓ Advanced pronunciation</li>
+        </ul>
+        <button class="btn btn-primary" style="width:100%" data-start>Start with Free</button>
+      </div>
+    </div>
+  </section>
+
+  <footer><div class="wrap" style="display:flex;gap:14px;flex-wrap:wrap;justify-content:space-between;padding:0 16px">
+    <div>© ${new Date().getFullYear()} FluentAI</div><div>Speak English. Think in English.</div>
+  </div></footer>`;
+
+  const chips = $("#scenarioChips");
+  if (chips) chips.innerHTML = SCENARIOS.map(s => `<button class="chip" data-scenario="${s.id}">${s.icon} ${esc(s.name)}</button>`).join("");
+  $$("[data-scenario]").forEach(b => b.onclick = () => openAuthModal(null, b.dataset.scenario));
+  $("#ctaStart").onclick = () => openAuthModal();
+  $$("[data-start]").forEach(b => b.onclick = () => openAuthModal());
+
+  if (!STT.supported) {
+    const n = $("#unsupportedNote");
+    if (n) n.innerHTML = `<div class="banner warn" style="max-width:640px;margin:26px auto 0;text-align:left"><span>⚠️</span><div><b>Your browser doesn't support speech recognition.</b><br>Please use Chrome, Edge or Safari on desktop or Android.</div></div>`;
+  }
+}
+
+function openAuthModal(subtitle, preselectedScenario) {
+  const root = $("#modalRoot");
+  root.innerHTML = `
+    <div class="overlay" id="ov">
+      <div class="modal" role="dialog" aria-modal="true">
+        <h2>Let's get you speaking</h2>
+        <p class="sub">${esc(subtitle || "Your conversations stay on your device. No email needed.")}</p>
+        <div class="field"><label for="auName">Your name</label>
+          <input id="auName" type="text" placeholder="e.g. Rahul" autocomplete="name" /></div>
+        <div class="field"><label for="auProfession">What do you do? (optional)</label>
+          <input id="auProfession" type="text" placeholder="e.g. Software engineer, Doctor, Teacher" /></div>
+        <div class="field"><label for="auLevel">Your English level</label>
+          <select id="auLevel">${["Beginner","Elementary","Intermediate","Upper Intermediate","Advanced"].map(l => `<option ${l === "Intermediate" ? "selected" : ""}>${l}</option>`).join("")}</select></div>
+        <button class="btn btn-primary" id="auGo" style="width:100%;margin-top:6px">Start Speaking</button>
+        <button class="btn btn-ghost" id="auCancel" style="width:100%;margin-top:10px">Cancel</button>
+      </div>
+    </div>`;
+  const close = () => { root.innerHTML = ""; };
+  $("#auCancel").onclick = close;
+  $("#ov").onclick = (e) => { if (e.target.id === "ov") close(); };
+  $("#auGo").onclick = () => {
+    const name = $("#auName").value.trim();
+    const profession = $("#auProfession").value.trim();
+    const level = $("#auLevel").value;
+    if (!name) { toast("Please enter your name"); $("#auName").focus(); return; }
+    Repo.setUser({ id: "u_" + uid(), name, level, profession, plan: "free", createdAt: Date.now() });
+    close();
+    toast(`Welcome, ${name}!`);
+    location.hash = "#/tutor" + (preselectedScenario ? `?scenario=${preselectedScenario}` : "");
+    App.render();
+  };
+  setTimeout(() => $("#auName")?.focus(), 80);
+}
+
+/* ---------- TUTOR ---------- */
+function renderTutor(params, user) {
+  const requested = params.get("scenario");
+  const scenarioId = requested && SCENARIOS.some(s => s.id === requested) ? requested : "daily";
+  const scenario = SCENARIOS.find(s => s.id === scenarioId);
+  const life = generateLife(user.profession);
+
+  $("#app").innerHTML = `
+  <div class="tutor-shell">
+    <div class="tutor-top">
+      <span class="tag">🎯 <b>${esc(scenario.name)}</b></span>
+      <span class="tag">📊 <b>${esc(user.level)}</b></span>
+      <span class="tag">🎨 <b>${esc(life.identity.role)}</b></span>
+      <button class="btn btn-ghost btn-sm" id="changeBtn" style="margin-left:auto">Change</button>
+      <button class="btn btn-ghost btn-sm" id="endBtn">End</button>
+    </div>
+    <div class="stage" id="stage" data-state="idle">
+      <div class="avatar">👩‍🎨</div>
+      <div class="status" id="status" data-s="idle">Loading…</div>
+      <div class="tutor-say" id="tutorSay"></div>
+      <div class="correction-box" id="correctionBox"></div>
+      <div class="interim" id="interim"></div>
+    </div>
+    <div class="turns" id="turns"></div>
+  </div>`;
+
+  renderMicDock();
+  $("#changeBtn").onclick = () => openScenarioPicker();
+  $("#endBtn").onclick = async () => {
+    if (!currentEngine) { location.hash = "#/dashboard"; return; }
+    const session = await currentEngine.end();
+    showSummary(session);
+  };
+
+  const engine = createEngine(scenario, user, life);
+  currentEngine = engine;
+  setTimeout(() => engine.start(), 300);
+}
+
+function renderMicDock() {
+  const dock = $("#micDock");
+  dock.style.display = "flex";
+  const continuous = Repo.getSettings().continuousMode !== false;
+  dock.innerHTML = `
+    <label class="cont-toggle">
+      <input type="checkbox" id="contToggle" ${continuous ? "checked" : ""} />
+      <span class="sw"></span>
+      <span class="label">Continuous</span>
+    </label>
+    <div class="mic-row">
+      <button class="mic" id="micBtn" data-state="idle" aria-label="Tap to speak"><span id="micIcon">🎤</span></button>
+    </div>
+    <div class="mic-hint" id="micHint">Tap to speak</div>`;
+  $("#micBtn").addEventListener("click", () => currentEngine?.toggleMic());
+  $("#contToggle").addEventListener("change", (e) => { currentEngine?.setContinuous(e.target.checked); toast(e.target.checked ? "Continuous mode on" : "Continuous mode off"); });
+  if (!STT.supported) {
+    $("#micBtn").disabled = true;
+    $("#micBtn").style.opacity = ".45";
+    $("#micHint").textContent = "Speech recognition not supported";
+  }
+}
+
+function openScenarioPicker() {
+  const root = $("#modalRoot");
+  root.innerHTML = `
+    <div class="overlay" id="ov"><div class="modal" style="max-width:520px">
+      <h2>Choose a scenario</h2><p class="sub">Switching starts a new session.</p>
+      <div style="display:grid;gap:9px;max-height:52vh;overflow-y:auto">
+        ${SCENARIOS.map(s => `<button class="btn btn-ghost" style="justify-content:flex-start;text-align:left;padding:12px 14px" data-pick="${s.id}">
+          <span style="font-size:19px">${s.icon}</span>
+          <span style="flex:1;margin-left:10px"><span style="display:block;font-weight:640;font-size:14.5px">${esc(s.name)}</span>
+          <span style="display:block;font-size:12.5px;color:var(--muted)">${esc(s.blurb)}</span></span>
+        </button>`).join("")}
+      </div>
+      <button class="btn btn-ghost" id="pickCancel" style="width:100%;margin-top:14px">Cancel</button>
+    </div></div>`;
+  const close = () => { root.innerHTML = ""; };
+  $("#pickCancel").onclick = close;
+  $("#ov").onclick = (e) => { if (e.target.id === "ov") close(); };
+  $$("[data-pick]").forEach(b => b.onclick = async () => {
+    close();
+    if (currentEngine) await currentEngine.end();
+    location.hash = `#/tutor?scenario=${b.dataset.pick}`;
+    App.render();
+  });
+}
+
+function showSummary(session) {
+  const s = session.scores || {};
+  const labelFor = { grammar: "Grammar", vocabulary: "Vocabulary", fluency: "Fluency", confidence: "Confidence" };
+  $("#app").innerHTML = `
+    <div class="tutor-shell" style="max-width:720px">
+      <div class="stage" style="min-height:auto;padding:30px 20px">
+        <div class="avatar">🎉</div>
+        <h1 style="margin:0;font-size:24px">Session complete</h1>
+        <p style="color:var(--muted);margin:0;font-size:14px">${esc(session.scenarioName)} · ${Math.round(session.duration / 60)} min</p>
+      </div>
+      <div class="summary-grid">
+        <div class="sum-item"><div class="v">${Math.round(session.duration / 60)}m</div><div class="k">Speaking</div></div>
+        <div class="sum-item"><div class="v">${session.turnCount}</div><div class="k">Turns</div></div>
+        <div class="sum-item"><div class="v">${session.wordCount}</div><div class="k">Words</div></div>
+        <div class="sum-item"><div class="v">${session.mistakes.length}</div><div class="k">Corrections</div></div>
+      </div>
+      <div class="panel" style="margin-bottom:14px"><h2>📈 This session</h2>
+        ${Object.entries(s).filter(([k, v]) => typeof v === "number").map(([k, v]) => `
+          <div class="bar-row"><div class="bar-top"><span>${labelFor[k] || k}</span><span>${v}</span></div>
+          <div class="bar"><i class="${v >= 75 ? "g" : v >= 55 ? "" : "w"}" style="width:${v}%"></i></div></div>`).join("")}
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-primary" id="againBtn" style="flex:1;min-width:160px">Practise again</button>
+        <button class="btn btn-ghost" id="dashBtn" style="flex:1;min-width:160px">Dashboard</button>
+      </div>
+    </div>`;
+  $("#againBtn").onclick = () => { location.hash = `#/tutor?scenario=${session.scenario}`; App.render(); };
+  $("#dashBtn").onclick = () => { location.hash = "#/dashboard"; App.render(); };
+}
+
+/* ---------- DASHBOARD ---------- */
+function renderDashboard(user) {
+  const sessions = Repo.getSessions();
+  const mistakes = Repo.getMistakes();
+  const totalSec = sessions.reduce((a, s) => a + (s.duration || 0), 0);
+  const totalWords = sessions.reduce((a, s) => a + (s.wordCount || 0), 0);
+  const days = new Set(sessions.map(s => new Date(s.startedAt).toISOString().slice(0, 10)));
+  let streak = 0;
+  const d = new Date();
+  if (!days.has(d.toISOString().slice(0, 10))) d.setDate(d.getDate() - 1);
+  while (days.has(d.toISOString().slice(0, 10))) { streak++; d.setDate(d.getDate() - 1); }
+  Mastery.load();
+  const mstats = Mastery.stats();
+  const life = generateLife(user.profession);
+  const remaining = Repo.remainingSecondsToday();
+  const plan = Repo.getPlan();
+
+  $("#app").innerHTML = `
+  <div class="wrap" style="padding:0 16px 60px">
+    <div class="page-head">
+      <h1>Hi ${esc(user.name)} 👋</h1>
+      <p>${sessions.length === 0 ? "Start your first session to build momentum." : `${sessions.length} session${sessions.length === 1 ? "" : "s"} so far.`}</p>
+    </div>
+
+    ${plan === "free" ? `<div class="banner ${remaining <= 120 ? "warn" : "info"}" style="margin-top:16px">
+      <span>${remaining <= 120 ? "⏳" : "🕐"}</span>
+      <div><b>${Math.ceil(remaining / 60)} of 10 free minutes left today.</b> Upgrade to Pro for unlimited.</div>
+    </div>` : ""}
+
+    <div class="grid g4" style="margin-top:20px">
+      <div class="stat"><div class="k">Level</div><div class="v" style="font-size:19px">${esc(user.level)}</div></div>
+      <div class="stat"><div class="k">Streak</div><div class="v">${streak} <span style="font-size:14px;color:var(--muted)">d</span></div></div>
+      <div class="stat"><div class="k">Speaking time</div><div class="v">${fmtDur(totalSec)}</div></div>
+      <div class="stat"><div class="k">Sessions</div><div class="v">${sessions.length}</div></div>
+    </div>
+
+    <div class="grid g2" style="margin-top:20px">
+      <div class="panel">
+        <h2>🎤 Start a session</h2>
+        <div class="chips">
+          ${SCENARIOS.slice(0, 5).map(s => `<a href="#/tutor?scenario=${s.id}" class="chip">${s.icon} ${esc(s.name)}</a>`).join("")}
+        </div>
+      </div>
+      <div class="panel">
+        <h2>📚 Mastery</h2>
+        <div class="bar-row"><div class="bar-top"><span class="n">In progress</span><span class="v">${mstats.inProgress}</span></div>
+          <div class="bar"><i style="width:${Math.min(100, mstats.inProgress * 10)}%"></i></div></div>
+        <div class="bar-row"><div class="bar-top"><span class="n">Mastered</span><span class="v">${mstats.mastered}</span></div>
+          <div class="bar"><i class="g" style="width:${Math.min(100, mstats.mastered * 10)}%"></i></div></div>
+      </div>
+    </div>
+
+    <div class="grid g2" style="margin-top:20px">
+      <div class="panel">
+        <h2>🧠 Recent mistakes</h2>
+        ${mistakes.length ? mistakes.slice(0, 4).map(m => `<div class="mistake-item"><span class="cat">${esc(m.category)}</span>
+          <div class="body"><div class="o">${esc(m.original)}</div><div class="c">${esc(m.corrected)}</div>
+          <div class="meta">${fmtClock(m.createdAt)}</div></div></div>`).join("") : '<div class="empty">✨ No mistakes yet.</div>'}
+      </div>
+      <div class="panel">
+        <h2>🕘 Recent sessions</h2>
+        ${sessions.length ? sessions.slice(0, 4).map(s => `<div class="mistake-item">
+          <span class="cat">${esc(s.level.split(" ")[0])}</span>
+          <div class="body"><div style="font-weight:600">${esc(s.scenarioName)}</div>
+          <div class="meta">${fmtDur(s.duration)} · ${s.turnCount} turns · ${fmtClock(s.startedAt)}</div></div>
+        </div>`).join("") : '<div class="empty">🎙️ No sessions yet.</div>'}
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:20px">
+      <h2>🎙️ Your friend</h2>
+      <p style="color:var(--muted);font-size:14px;margin:0 0 10px">Nancy takes a role based on your profession. Yours is: <b style="color:var(--text)">${esc(life.identity.role)}</b></p>
+      <p class="tiny">Everything stays on your device. Nothing goes to a server.</p>
+    </div>
+  </div>`;
+}
+
+/* ---------- PROGRESS ---------- */
+function renderProgress(user) {
+  const sessions = Repo.getSessions();
+  const mistakes = Repo.getMistakes();
+  const totalSec = sessions.reduce((a, s) => a + (s.duration || 0), 0);
+  Mastery.load();
+  const items = Object.values(Mastery.items);
+  const mastered = items.filter(i => ["mastered", "ultra_mastered"].includes(i.stage));
+  const inProgress = items.filter(i => ["introduced", "user_used_thought", "user_used_auto"].includes(i.stage));
+
+  const avg = {};
+  ["grammar", "vocabulary", "fluency", "confidence"].forEach(k => {
+    const vals = sessions.map(s => s.scores?.[k]).filter(v => typeof v === "number");
+    avg[k] = vals.length ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length) : null;
+  });
+  const byCat = {};
+  mistakes.forEach(m => { byCat[m.category] = (byCat[m.category] || 0) + 1; });
+  const cats = Object.entries(byCat).sort((a, b) => b[1] - a[1]);
+  const maxC = cats.length ? cats[0][1] : 1;
+
+  $("#app").innerHTML = `
+  <div class="wrap" style="padding:0 16px 60px">
+    <div class="page-head"><h1>Progress</h1><p>Real numbers from your sessions.</p></div>
+    <div class="grid g4" style="margin-top:20px">
+      <div class="stat"><div class="k">Total speaking</div><div class="v">${fmtDur(totalSec)}</div></div>
+      <div class="stat"><div class="k">Sessions</div><div class="v">${sessions.length}</div></div>
+      <div class="stat"><div class="k">Mastered</div><div class="v">${mastered.length}</div></div>
+      <div class="stat"><div class="k">In progress</div><div class="v">${inProgress.length}</div></div>
+    </div>
+    <div class="grid g2" style="margin-top:20px">
+      <div class="panel"><h2>📊 Skills</h2>
+        ${Object.entries({grammar:"Grammar",vocabulary:"Vocabulary",fluency:"Fluency",confidence:"Confidence"}).map(([k, label]) => {
+          const v = avg[k];
+          return `<div class="bar-row"><div class="bar-top"><span class="n">${label}</span><span class="v">${v ?? "—"}</span></div>
+            <div class="bar"><i class="${v == null ? "" : v >= 75 ? "g" : v >= 55 ? "" : "w"}" style="width:${v || 0}%"></i></div></div>`;
+        }).join("")}
+      </div>
+      <div class="panel"><h2>🔍 Mistakes by category</h2>
+        ${cats.length ? cats.map(([c, n]) => `<div class="bar-row"><div class="bar-top"><span class="n">${esc(c)}</span><span class="v">${n}</span></div>
+          <div class="bar"><i class="w" style="width:${Math.round((n / maxC) * 100)}%"></i></div></div>`).join("") : '<div class="empty">No mistakes yet.</div>'}
+      </div>
+    </div>
+    ${mastered.length ? `<div class="panel" style="margin-top:20px"><h2>✓ Mastered</h2>
+      ${mastered.map(i => `<div class="mistake-item"><span class="cat">${esc(i.category)}</span>
+        <div class="body"><div style="color:var(--text);font-weight:600">${esc(i.correct)}</div>
+        <div class="meta">Used ${i.timesUserUsedCorrectly}× · ${i.stage.replace(/_/g, " ")}</div></div></div>`).join("")}
+    </div>` : ""}
+    ${inProgress.length ? `<div class="panel" style="margin-top:20px"><h2>📈 Learning now</h2>
+      ${inProgress.map(i => `<div class="mistake-item"><span class="cat">${esc(i.category)}</span>
+        <div class="body"><div style="font-weight:600;color:var(--text)">${esc(i.correct)}</div>
+        <div class="meta">${i.stage.replace(/_/g, " ")} · used ${i.timesUserUsedCorrectly}×</div></div></div>`).join("")}
+    </div>` : ""}
+  </div>`;
+}
+
+/* ---------- MISTAKES ---------- */
+let mistakeFilter = "all";
+function renderMistakes(user) {
+  const all = Repo.getMistakes();
+  const cats = ["all", ...new Set(all.map(m => m.category))];
+  const list = mistakeFilter === "all" ? all : all.filter(m => m.category === mistakeFilter);
+  $("#app").innerHTML = `
+  <div class="wrap" style="padding:0 16px 60px">
+    <div class="page-head"><h1>Mistake history</h1><p>Every correction, with the explanation.</p></div>
+    <div class="chips" style="margin:20px 0">
+      ${cats.map(c => `<button class="chip ${mistakeFilter === c ? "on" : ""}" data-cat="${esc(c)}" style="${mistakeFilter === c ? "border-color:var(--brand);color:var(--text)" : ""}">${c === "all" ? `All (${all.length})` : `${esc(c)} (${all.filter(m => m.category === c).length})`}</button>`).join("")}
+    </div>
+    <div class="panel">
+      ${list.length ? list.map(m => `<div class="mistake-item"><span class="cat">${esc(m.category)}</span>
+        <div class="body"><div class="o">${esc(m.original)}</div><div class="c">${esc(m.corrected)}</div>
+        <div class="meta">${esc(m.explanation || "")} · ${fmtClock(m.createdAt)}</div></div></div>`).join("") : '<div class="empty">✨ No mistakes yet.</div>'}
+    </div>
+  </div>`;
+  $$("[data-cat]").forEach(b => b.onclick = () => { mistakeFilter = b.dataset.cat; renderMistakes(user); });
+}
+
+/* ---------- SETTINGS ---------- */
+function renderSettings(user) {
+  const s = Repo.getSettings();
+  const voices = TTS.getVoices();
+  $("#app").innerHTML = `
+  <div class="wrap" style="max-width:680px;padding:0 16px 60px">
+    <div class="page-head"><h1>Settings</h1></div>
+    <div class="panel" style="margin-top:20px"><h2>👤 Profile</h2>
+      <div class="field"><label>Name</label><input id="setName" type="text" value="${esc(user.name)}" /></div>
+      <div class="field"><label>Profession</label><input id="setProfession" type="text" value="${esc(user.profession || "")}" placeholder="e.g. Software engineer" /></div>
+      <div class="field"><label>Level</label>
+        <select id="setLevel">${["Beginner","Elementary","Intermediate","Upper Intermediate","Advanced"].map(l => `<option ${l === user.level ? "selected" : ""}>${l}</option>`).join("")}</select></div>
+      <button class="btn btn-primary btn-sm" id="saveProfile">Save</button>
+    </div>
+    <div class="panel" style="margin-top:14px"><h2>🎙️ Voice</h2>
+      <div class="field"><label>Speech recognition language</label>
+        <select id="setLang">
+          <option value="en-IN" ${s.sttLang === "en-IN" ? "selected" : ""}>English (India)</option>
+          <option value="en-US" ${s.sttLang === "en-US" ? "selected" : ""}>English (US)</option>
+          <option value="en-GB" ${s.sttLang === "en-GB" ? "selected" : ""}>English (UK)</option>
+        </select></div>
+      <div class="field"><label>Tutor speed — <span id="rateVal">${(s.rate || 0.95).toFixed(2)}</span>×</label>
+        <input id="setRate" type="range" min="0.6" max="1.3" step="0.05" value="${s.rate || 0.95}" style="width:100%" /></div>
+      <div class="field"><label>Tutor voice</label>
+        <select id="setVoice"><option value="">Automatic</option>
+          ${voices.map(v => `<option value="${esc(v.voiceURI)}" ${s.voiceURI === v.voiceURI ? "selected" : ""}>${esc(v.name)} — ${esc(v.lang)}</option>`).join("")}
+        </select></div>
+      <div class="field"><label>Correction strictness</label>
+        <select id="setCorrection">
+          <option value="gentle" ${s.correctionMode === "gentle" ? "selected" : ""}>Gentle — only major errors</option>
+          <option value="balanced" ${s.correctionMode === "balanced" ? "selected" : ""}>Balanced — recommended</option>
+          <option value="strict" ${s.correctionMode === "strict" ? "selected" : ""}>Strict — every mistake</option>
+        </select></div>
+      <button class="btn btn-primary btn-sm" id="saveVoice">Save voice</button>
+      <button class="btn btn-ghost btn-sm" id="testVoice" style="margin-left:8px">Test voice</button>
+    </div>
+    <div class="panel" style="margin-top:14px"><h2>💳 Plan</h2>
+      <p style="color:var(--muted);font-size:14px;margin:0 0 14px">You're on the <b style="color:var(--text)">${user.plan === "pro" ? "Pro" : "Free"}</b> plan.</p>
+      ${user.plan === "free" ? `<button class="btn btn-primary btn-sm" id="upgradeBtn">Upgrade to Pro — ₹49/month</button>
+        <p class="tiny" style="margin-top:10px">Payment system coming soon. Currently free.</p>` : ""}
+    </div>
+    <div class="panel" style="margin-top:14px"><h2>📤 Backup</h2>
+      <p class="tiny" style="margin-bottom:14px">Export your data as JSON. Import on another device.</p>
+      <button class="btn btn-ghost btn-sm" id="exportBtn">Export</button>
+      <button class="btn btn-ghost btn-sm" id="importBtn" style="margin-left:8px">Import</button>
+      <input id="importFile" type="file" accept=".json" style="display:none" />
+    </div>
+    <div class="panel" style="margin-top:14px"><h2>🚪 Account</h2>
+      <button class="btn btn-ghost btn-sm" id="signOut">Sign out</button>
+      <button class="btn btn-ghost btn-sm" id="wipe" style="margin-left:8px;border-color:rgba(239,68,68,.4);color:#FCA5A5">Delete all data</button>
+    </div>
+  </div>`;
+
+  $("#saveProfile").onclick = () => {
+    const name = $("#setName").value.trim();
+    const profession = $("#setProfession").value.trim();
+    const level = $("#setLevel").value;
+    if (!name) { toast("Name required"); return; }
+    Repo.setUser({ ...user, name, profession, level });
+    toast("Saved"); location.reload();
+  };
+  $("#setRate").oninput = e => { $("#rateVal").textContent = parseFloat(e.target.value).toFixed(2); };
+  $("#saveVoice").onclick = () => {
+    Repo.setSettings({ sttLang: $("#setLang").value, rate: parseFloat($("#setRate").value), voiceURI: $("#setVoice").value || null, correctionMode: $("#setCorrection").value });
+    toast("Saved");
+  };
+  $("#testVoice").onclick = () => { TTS.cancel(); TTS.speak("Hello! This is how I'll sound.", { rate: parseFloat($("#setRate").value) }); };
+  const up = $("#upgradeBtn");
+  if (up) up.onclick = () => toast("Payment coming soon — enjoy free for now!");
+  $("#exportBtn").onclick = () => {
+    const data = localStorage.getItem(DB_KEY);
+    const blob = new Blob([data], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = `fluentai-backup-${new Date().toISOString().slice(0, 10)}.json`; a.click();
+    URL.revokeObjectURL(url);
+  };
+  $("#importBtn").onclick = () => $("#importFile").click();
+  $("#importFile").onchange = (e) => {
+    const file = e.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try { JSON.parse(reader.result); localStorage.setItem(DB_KEY, reader.result); toast("Imported — reloading"); setTimeout(() => location.reload(), 800); }
+      catch { toast("Invalid file"); }
+    };
+    reader.readAsText(file);
+  };
+  $("#signOut").onclick = () => { Repo.clearUser(); location.hash = "#/"; location.reload(); };
+  $("#wipe").onclick = () => {
+    if (!confirm("Delete all data? Cannot be undone.")) return;
+    localStorage.clear(); location.hash = "#/"; location.reload();
+  };
+}
+
+/* ---------- BOOT ---------- */
+window.addEventListener("hashchange", () => App.render());
+window.addEventListener("load", () => {
+  setTimeout(() => TTS.refresh(), 300);
+  setTimeout(() => TTS.refresh(), 1200);
+});
+App.render();
+</script>
+</body>
+</html>
